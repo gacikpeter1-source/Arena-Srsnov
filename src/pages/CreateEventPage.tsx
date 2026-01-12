@@ -50,7 +50,9 @@ export default function CreateEventPage() {
           const eventDoc = await getDoc(doc(db, 'events', eventId))
           if (eventDoc.exists()) {
             const eventData = eventDoc.data() as Event
-            const eventDate = eventData.date?.toDate ? eventData.date.toDate() : new Date(eventData.date)
+            const eventDate = eventData.date && typeof eventData.date === 'object' && 'toDate' in eventData.date 
+              ? eventData.date.toDate() 
+              : new Date(eventData.date)
             
             setFormData({
               title: eventData.title,

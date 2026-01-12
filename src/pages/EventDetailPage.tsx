@@ -17,8 +17,7 @@ import { useToast } from '@/hooks/use-toast'
 export default function EventDetailPage() {
   const { t } = useTranslation()
   const { eventId } = useParams<{ eventId: string }>()
-  const { userData, isTrainer } = useAuth()
-  const navigate = useNavigate()
+  const { isTrainer } = useAuth()
   const { toast } = useToast()
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)

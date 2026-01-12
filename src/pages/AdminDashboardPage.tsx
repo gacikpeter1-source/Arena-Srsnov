@@ -13,7 +13,6 @@ export default function AdminDashboardPage() {
   const { toast } = useToast()
   const [pendingTrainers, setPendingTrainers] = useState<User[]>([])
   const [allTrainers, setAllTrainers] = useState<User[]>([])
-  const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
     totalTrainings: 0,
@@ -60,7 +59,6 @@ export default function AdminDashboardPage() {
         createdAt: doc.data().createdAt?.toDate() || new Date(),
         updatedAt: doc.data().updatedAt?.toDate() || new Date()
       })) as Event[]
-      setEvents(allEvents)
 
       // Calculate statistics
       const trainingsByTrainer: { [key: string]: number } = {}
