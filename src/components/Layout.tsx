@@ -62,7 +62,7 @@ export default function Layout({ children }: LayoutProps) {
       />
 
       {/* Header */}
-      <header className="relative z-10 bg-black/40 backdrop-blur-sm border-b border-white/10">
+      <header className="relative z-10 bg-background-dark/95 backdrop-blur-sm border-b border-border">
         <div className="content-container">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-4">
@@ -71,30 +71,30 @@ export default function Layout({ children }: LayoutProps) {
                   variant="ghost"
                   size="icon"
                   onClick={goBack}
-                  className="text-white hover:bg-white/10"
+                  className="text-primary hover:bg-primary/10"
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               )}
-              <Link to="/" className="text-white">
-                <h1 className="text-xl md:text-2xl font-bold">{t('app.title')}</h1>
+              <Link to="/" className="text-white hover:text-primary transition-colors">
+                <h1 className="text-xl md:text-2xl font-bold tracking-tight">{t('app.title')}</h1>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-4">
+            <nav className="hidden md:flex items-center gap-2">
               <Link to="/">
-                <Button variant="ghost" className="text-white hover:bg-white/10">
+                <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                   {t('nav.home')}
                 </Button>
               </Link>
               <Link to="/calendar">
-                <Button variant="ghost" className="text-white hover:bg-white/10">
+                <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                   {t('nav.calendar')}
                 </Button>
               </Link>
               <Link to="/trainers">
-                <Button variant="ghost" className="text-white hover:bg-white/10">
+                <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                   {t('nav.trainers')}
                 </Button>
               </Link>
@@ -103,28 +103,28 @@ export default function Layout({ children }: LayoutProps) {
                 <>
                   {userData.role === 'admin' && (
                     <Link to="/admin">
-                      <Button variant="ghost" className="text-white hover:bg-white/10">
+                      <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                         {t('nav.admin')}
                       </Button>
                     </Link>
                   )}
                   <Link to="/settings">
-                    <Button variant="ghost" className="text-white hover:bg-white/10">
+                    <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                       {t('nav.settings')}
                     </Button>
                   </Link>
                   <Link to="/profile">
-                    <Button variant="ghost" className="text-white hover:bg-white/10">
+                    <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                       {t('nav.profile')}
                     </Button>
                   </Link>
-                  <Button onClick={handleSignOut} variant="outline" className="text-white border-white/20 hover:bg-white/10">
+                  <Button onClick={handleSignOut} variant="outline" className="text-white border-border hover:bg-primary/10 hover:border-primary">
                     {t('nav.logout')}
                   </Button>
                 </>
               ) : (
                 <Link to="/login">
-                  <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary-gold font-semibold">
                     {t('nav.login')}
                   </Button>
                 </Link>
@@ -134,7 +134,7 @@ export default function Layout({ children }: LayoutProps) {
                 variant="ghost"
                 size="icon"
                 onClick={toggleLanguage}
-                className="text-white hover:bg-white/10"
+                className="text-white hover:text-primary hover:bg-primary/10"
                 title={i18n.language === 'sk' ? 'English' : 'Slovenčina'}
               >
                 <Globe className="h-5 w-5" />
@@ -147,7 +147,7 @@ export default function Layout({ children }: LayoutProps) {
                 variant="ghost"
                 size="icon"
                 onClick={toggleLanguage}
-                className="text-white hover:bg-white/10"
+                className="text-white hover:text-primary hover:bg-primary/10"
               >
                 <Globe className="h-5 w-5" />
               </Button>
@@ -155,7 +155,7 @@ export default function Layout({ children }: LayoutProps) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-white hover:bg-white/10"
+                className="text-white hover:text-primary hover:bg-primary/10"
               >
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </Button>
@@ -164,19 +164,19 @@ export default function Layout({ children }: LayoutProps) {
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <nav className="md:hidden pb-4 flex flex-col gap-2">
+            <nav className="md:hidden pb-4 flex flex-col gap-2 border-t border-border mt-4 pt-4">
               <Link to="/" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full text-white hover:bg-white/10 justify-start">
+                <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
                   {t('nav.home')}
                 </Button>
               </Link>
               <Link to="/calendar" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full text-white hover:bg-white/10 justify-start">
+                <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
                   {t('nav.calendar')}
                 </Button>
               </Link>
               <Link to="/trainers" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full text-white hover:bg-white/10 justify-start">
+                <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
                   {t('nav.trainers')}
                 </Button>
               </Link>
@@ -185,32 +185,32 @@ export default function Layout({ children }: LayoutProps) {
                 <>
                   {userData.role === 'admin' && (
                     <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full text-white hover:bg-white/10 justify-start">
+                      <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
                         {t('nav.admin')}
                       </Button>
                     </Link>
                   )}
                   <Link to="/settings" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full text-white hover:bg-white/10 justify-start">
+                    <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
                       {t('nav.settings')}
                     </Button>
                   </Link>
                   <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full text-white hover:bg-white/10 justify-start">
+                    <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
                       {t('nav.profile')}
                     </Button>
                   </Link>
                   <Button 
                     onClick={() => { handleSignOut(); setMobileMenuOpen(false); }} 
                     variant="outline" 
-                    className="w-full text-white border-white/20 hover:bg-white/10 justify-start"
+                    className="w-full text-white border-border hover:bg-primary/10 hover:border-primary justify-start"
                   >
                     {t('nav.logout')}
                   </Button>
                 </>
               ) : (
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10 justify-start">
+                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary-gold font-semibold justify-start">
                     {t('nav.login')}
                   </Button>
                 </Link>

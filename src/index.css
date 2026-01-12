@@ -4,48 +4,27 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Arena Sršňov Color Scheme */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 16.5%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 16.5%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 44 98% 53%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 16.5%;
+    --secondary-foreground: 0 0% 88%;
+    --muted: 0 0% 16.5%;
+    --muted-foreground: 0 0% 63%;
+    --accent: 44 98% 53%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 23%;
+    --input: 0 0% 23%;
+    --ring: 44 98% 53%;
     --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
   }
 }
 
@@ -53,39 +32,52 @@
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background-darkest text-text-primary;
     font-feature-settings: "rlig" 1, "calt" 1;
     line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif;
   }
   
-  /* Responsive typography */
+  /* Hockey arena aesthetic - responsive typography */
   h1 {
     font-size: clamp(1.75rem, 4vw, 3rem);
     font-weight: 700;
     line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #ffffff;
   }
   
   h2 {
     font-size: clamp(1.5rem, 3vw, 2.25rem);
     font-weight: 600;
     line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: #ffffff;
   }
   
   h3 {
     font-size: clamp(1.25rem, 2.5vw, 1.875rem);
     font-weight: 600;
     line-height: 1.4;
+    color: #ffffff;
   }
   
   p {
     max-width: 75ch;
     line-height: 1.7;
     letter-spacing: 0.01em;
+    color: #e0e0e0;
+  }
+  
+  /* Monospace for codes and times */
+  code, .mono {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   }
 }
 
-/* Background image container */
+/* Background image container - Hockey arena style */
 .bg-container {
   position: fixed;
   top: 0;
@@ -96,6 +88,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-color: #0a0a0a;
 }
 
 .bg-container::after {
@@ -105,7 +98,20 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(10, 10, 10, 0.8);
+}
+
+/* Optional honeycomb pattern overlay */
+.bg-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='50' height='43.4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M25 0l12.5 7.2v14.5L25 28.9 12.5 21.7V7.2L25 0z' fill='none' stroke='%23ffffff' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E");
+  opacity: 0.1;
+  z-index: 1;
 }
 
 /* Responsive content width */
@@ -113,6 +119,8 @@
   width: 100%;
   margin: 0 auto;
   padding: 1rem 1rem;
+  position: relative;
+  z-index: 10;
 }
 
 @media (min-width: 640px) {
@@ -150,6 +158,41 @@
   .content-container {
     max-width: 60vw;
   }
+}
+
+/* Arena card styles */
+.arena-card {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.arena-card:hover {
+  background: #333333;
+  border-color: #4a4a4a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(253, 185, 19, 0.1);
+}
+
+/* Event status indicators */
+.event-open {
+  border-left: 4px solid #22c55e;
+}
+
+.event-full {
+  border-left: 4px solid #ef4444;
+}
+
+.event-past {
+  border-left: 4px solid #6b7280;
+  opacity: 0.6;
+}
+
+/* Hockey-inspired hexagonal elements */
+.hex-corner {
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 
 

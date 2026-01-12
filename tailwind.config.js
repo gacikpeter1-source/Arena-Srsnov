@@ -18,38 +18,61 @@ export default {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        // Arena Sršňov Brand Colors
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: '#FDB913',
+          yellow: '#FDB913',
+          gold: '#E6A800',
+          foreground: '#0a0a0a',
         },
+        background: {
+          DEFAULT: '#0a0a0a',
+          darkest: '#0a0a0a',
+          dark: '#1a1a1a',
+          card: '#2a2a2a',
+          cardHover: '#333333',
+        },
+        text: {
+          primary: '#ffffff',
+          secondary: '#e0e0e0',
+          muted: '#a0a0a0',
+        },
+        border: {
+          DEFAULT: '#3a3a3a',
+          light: '#4a4a4a',
+        },
+        status: {
+          success: '#22c55e',
+          danger: '#ef4444',
+          muted: '#6b7280',
+        },
+        // Shadcn compatibility
+        input: '#3a3a3a',
+        ring: '#FDB913',
+        foreground: '#ffffff',
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: '#2a2a2a',
+          foreground: '#e0e0e0',
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: '#ef4444',
+          foreground: '#ffffff',
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: '#2a2a2a',
+          foreground: '#a0a0a0',
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: '#FDB913',
+          foreground: '#0a0a0a',
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: '#2a2a2a',
+          foreground: '#ffffff',
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: '#2a2a2a',
+          foreground: '#ffffff',
         },
       },
       borderRadius: {

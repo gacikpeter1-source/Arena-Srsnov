@@ -71,14 +71,13 @@ export default function HomePage() {
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
         <Link to="/trainers">
           <Button 
             size="lg" 
-            className="w-full h-24 text-lg bg-white/10 hover:bg-white/20 text-white border border-white/20"
-            variant="outline"
+            className="w-full h-28 text-lg bg-primary hover:bg-primary-gold text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all"
           >
-            <Users className="mr-2 h-6 w-6" />
+            <Users className="mr-3 h-7 w-7" />
             {t('home.selectByTrainer')}
           </Button>
         </Link>
@@ -86,10 +85,10 @@ export default function HomePage() {
         <Link to="/calendar">
           <Button 
             size="lg" 
-            className="w-full h-24 text-lg bg-white/10 hover:bg-white/20 text-white border border-white/20"
+            className="w-full h-28 text-lg bg-background-card hover:bg-background-cardHover text-white border-2 border-primary font-semibold shadow-lg hover:shadow-xl transition-all"
             variant="outline"
           >
-            <Calendar className="mr-2 h-6 w-6" />
+            <Calendar className="mr-3 h-7 w-7" />
             {t('home.openCalendar')}
           </Button>
         </Link>
@@ -104,40 +103,44 @@ export default function HomePage() {
             {t('common.loading')}
           </div>
         ) : upcomingEvents.length === 0 ? (
-          <Card className="bg-white/10 border-white/20 text-white">
+          <Card className="arena-card text-white">
             <CardContent className="py-8 text-center">
-              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>{t('home.noTrainings')}</p>
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-primary opacity-50" />
+              <p className="text-text-secondary">{t('home.noTrainings')}</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid gap-4">
             {upcomingEvents.map(event => {
               const status = getEventStatus(event)
+              const confirmedCount = event.attendees?.length || 0
+              const isFull = event.capacity !== null && confirmedCount >= event.capacity
               
               return (
                 <Link key={event.id} to={`/events/${event.id}`}>
-                  <Card className="bg-white/10 hover:bg-white/15 border-white/20 transition-colors cursor-pointer">
+                  <Card className={`arena-card ${isFull ? 'event-full' : 'event-open'} cursor-pointer`}>
                     <CardHeader>
                       <CardTitle className="text-white flex items-start justify-between">
                         <span>{event.title}</span>
-                        <span className={`text-sm font-normal ${status.color}`}>
+                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                          isFull ? 'bg-status-danger/20 text-status-danger' : 'bg-status-success/20 text-status-success'
+                        }`}>
                           {status.text}
                         </span>
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-2 text-white/80">
+                      <div className="space-y-2 text-text-secondary">
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          <span>{formatDateTime(event.date)}</span>
+                          <Calendar className="h-4 w-4 text-primary" />
+                          <span className="mono">{formatDateTime(event.date)}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4" />
-                          <span>{event.duration} {t('events.duration').toLowerCase()}</span>
+                          <Clock className="h-4 w-4 text-primary" />
+                          <span>{event.duration} min</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4" />
+                          <Users className="h-4 w-4 text-primary" />
                           <span>{event.trainerName}</span>
                         </div>
                       </div>
