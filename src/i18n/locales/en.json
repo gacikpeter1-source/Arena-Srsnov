@@ -1,0 +1,166 @@
+{
+  "app": {
+    "title": "Aréna Sršňov",
+    "subtitle": "Hockey Training Reservations"
+  },
+  "nav": {
+    "home": "Home",
+    "calendar": "Calendar",
+    "trainers": "Trainers",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "settings": "Settings",
+    "profile": "Profile",
+    "admin": "Admin",
+    "back": "Back"
+  },
+  "home": {
+    "upcomingTrainings": "Upcoming Trainings",
+    "noTrainings": "No upcoming trainings",
+    "selectByTrainer": "Select Training by Trainer",
+    "openCalendar": "Open Calendar",
+    "spotsAvailable": "{{available}} of {{total}} spots",
+    "unlimited": "Unlimited",
+    "full": "Full",
+    "joinWaitlist": "Join Waitlist"
+  },
+  "calendar": {
+    "title": "Training Calendar",
+    "dayView": "Day",
+    "weekView": "Week",
+    "filterByTrainer": "Filter by Trainer",
+    "allTrainers": "All Trainers",
+    "today": "Today",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "trainers": {
+    "title": "Our Trainers",
+    "addTrainer": "Add Trainer",
+    "noTrainers": "No trainers"
+  },
+  "events": {
+    "createEvent": "Create Training",
+    "editEvent": "Edit Training",
+    "title": "Title",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration (minutes)",
+    "type": "Training Type",
+    "capacity": "Capacity",
+    "unlimited": "Unlimited",
+    "recurring": "Repeat Training",
+    "recurringType": "Recurrence Type",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "occurrences": "Number of Occurrences",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "attendees": "Attendees",
+    "waitlist": "Waitlist",
+    "book": "Book",
+    "cancelBooking": "Cancel Booking",
+    "trainer": "Trainer",
+    "types": {
+      "powerskating": "Powerskating",
+      "endurance": "Endurance",
+      "shooting": "Shooting",
+      "skills": "Skills",
+      "game": "Game",
+      "other": "Other"
+    }
+  },
+  "booking": {
+    "bookTraining": "Book Training",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "submit": "Book",
+    "success": "Booking successful!",
+    "confirmationEmail": "Confirmation email sent to {{email}}",
+    "cancel": "Cancel Booking",
+    "cancelTitle": "Cancel Booking",
+    "cancelDescription": "To cancel your booking, enter the email and phone you used for registration.",
+    "cancelSuccess": "Booking cancelled",
+    "cancelError": "Invalid email or phone",
+    "waitlistJoined": "Added to waitlist",
+    "promoted": "Congratulations! A spot opened up for this training."
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Trainer Registration",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "description": "Description",
+    "photo": "Photo",
+    "inviteCode": "Invite Code",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "needAccount": "Need an account?",
+    "haveAccount": "Already have an account?",
+    "pending": "Pending Approval",
+    "pendingMessage": "Your account is pending admin approval.",
+    "rejected": "Rejected",
+    "approved": "Approved"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "background": "App Background",
+    "uploadBackground": "Upload Background",
+    "changeBackground": "Change Background",
+    "inviteCodes": "Invite Codes",
+    "generateCode": "Generate Code",
+    "qrCode": "QR Code",
+    "generateQR": "Generate QR Code",
+    "qrSize": "Size",
+    "qrFormat": "Format",
+    "download": "Download",
+    "sizes": {
+      "small": "Small (200x200)",
+      "medium": "Medium (400x400)",
+      "large": "Large (800x800)",
+      "custom": "Custom"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "edit": "Edit Profile",
+    "deleteAccount": "Delete Account",
+    "deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone."
+  },
+  "admin": {
+    "title": "Administration",
+    "statistics": "Statistics",
+    "trainingsPerTrainer": "Trainings by Trainer",
+    "attendancePerMonth": "Attendance by Month",
+    "manageTrainers": "Manage Trainers",
+    "pendingApprovals": "Pending Approvals",
+    "approve": "Approve",
+    "reject": "Reject",
+    "remove": "Remove",
+    "totalTrainings": "Total Trainings",
+    "totalBookings": "Total Bookings",
+    "activeTrainers": "Active Trainers"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "select": "Select"
+  }
+}
+
+
+

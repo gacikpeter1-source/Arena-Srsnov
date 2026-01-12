@@ -1,0 +1,166 @@
+{
+  "app": {
+    "title": "Aréna Sršňov",
+    "subtitle": "Rezervácia hokejových tréningov"
+  },
+  "nav": {
+    "home": "Domov",
+    "calendar": "Kalendár",
+    "trainers": "Tréneri",
+    "login": "Prihlásiť sa",
+    "logout": "Odhlásiť sa",
+    "settings": "Nastavenia",
+    "profile": "Profil",
+    "admin": "Administrácia",
+    "back": "Späť"
+  },
+  "home": {
+    "upcomingTrainings": "Nadchádzajúce tréningy",
+    "noTrainings": "Žiadne nadchádzajúce tréningy",
+    "selectByTrainer": "Vybrať tréning podľa trénera",
+    "openCalendar": "Otvoriť kalendár",
+    "spotsAvailable": "{{available}} z {{total}} miest",
+    "unlimited": "Neobmedzené",
+    "full": "Plné",
+    "joinWaitlist": "Čakacia listina"
+  },
+  "calendar": {
+    "title": "Kalendár tréningov",
+    "dayView": "Deň",
+    "weekView": "Týždeň",
+    "filterByTrainer": "Filtrovať podľa trénera",
+    "allTrainers": "Všetci tréneri",
+    "today": "Dnes",
+    "previous": "Predchádzajúce",
+    "next": "Ďalšie"
+  },
+  "trainers": {
+    "title": "Naši tréneri",
+    "addTrainer": "Pridať trénera",
+    "noTrainers": "Žiadni tréneri"
+  },
+  "events": {
+    "createEvent": "Vytvoriť tréning",
+    "editEvent": "Upraviť tréning",
+    "title": "Názov",
+    "date": "Dátum",
+    "time": "Čas",
+    "duration": "Trvanie (minúty)",
+    "type": "Typ tréningu",
+    "capacity": "Kapacita",
+    "unlimited": "Neobmedzená",
+    "recurring": "Opakovať tréning",
+    "recurringType": "Typ opakovania",
+    "daily": "Denne",
+    "weekly": "Týždenne",
+    "occurrences": "Počet opakovaní",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "delete": "Vymazať",
+    "attendees": "Účastníci",
+    "waitlist": "Čakacia listina",
+    "book": "Rezervovať",
+    "cancelBooking": "Zrušiť rezerváciu",
+    "trainer": "Tréner",
+    "types": {
+      "powerskating": "Powerskating",
+      "endurance": "Vytrvalosť",
+      "shooting": "Strieľanie",
+      "skills": "Technické zručnosti",
+      "game": "Hra",
+      "other": "Iné"
+    }
+  },
+  "booking": {
+    "bookTraining": "Rezervovať tréning",
+    "name": "Meno a priezvisko",
+    "email": "Email",
+    "phone": "Telefónne číslo",
+    "submit": "Rezervovať",
+    "success": "Rezervácia úspešná!",
+    "confirmationEmail": "Potvrdzujúci email bol odoslaný na {{email}}",
+    "cancel": "Zrušiť rezerváciu",
+    "cancelTitle": "Zrušenie rezervácie",
+    "cancelDescription": "Pre zrušenie rezervácie zadajte email a telefón, ktoré ste použili pri registrácii.",
+    "cancelSuccess": "Rezervácia zrušená",
+    "cancelError": "Nesprávny email alebo telefón",
+    "waitlistJoined": "Pridaný na čakaciu listinu",
+    "promoted": "Gratulujeme! Uvoľnilo sa miesto na tréningu."
+  },
+  "auth": {
+    "login": "Prihlásenie",
+    "register": "Registrácia trénera",
+    "email": "Email",
+    "password": "Heslo",
+    "name": "Meno a priezvisko",
+    "phone": "Telefónne číslo",
+    "description": "Popis",
+    "photo": "Fotografia",
+    "inviteCode": "Pozývací kód",
+    "signIn": "Prihlásiť sa",
+    "signUp": "Registrovať sa",
+    "needAccount": "Potrebujete účet?",
+    "haveAccount": "Už máte účet?",
+    "pending": "Čaká na schválenie",
+    "pendingMessage": "Váš účet čaká na schválenie administrátorom.",
+    "rejected": "Zamietnuté",
+    "approved": "Schválené"
+  },
+  "settings": {
+    "title": "Nastavenia",
+    "language": "Jazyk",
+    "background": "Pozadie aplikácie",
+    "uploadBackground": "Nahrať pozadie",
+    "changeBackground": "Zmeniť pozadie",
+    "inviteCodes": "Pozývacie kódy",
+    "generateCode": "Generovať kód",
+    "qrCode": "QR kód",
+    "generateQR": "Generovať QR kód",
+    "qrSize": "Veľkosť",
+    "qrFormat": "Formát",
+    "download": "Stiahnuť",
+    "sizes": {
+      "small": "Malý (200x200)",
+      "medium": "Stredný (400x400)",
+      "large": "Veľký (800x800)",
+      "custom": "Vlastný"
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "edit": "Upraviť profil",
+    "deleteAccount": "Vymazať účet",
+    "deleteConfirm": "Naozaj chcete vymazať svoj účet? Táto akcia je nevratná."
+  },
+  "admin": {
+    "title": "Administrácia",
+    "statistics": "Štatistiky",
+    "trainingsPerTrainer": "Tréningy podľa trénera",
+    "attendancePerMonth": "Návštevnosť podľa mesiaca",
+    "manageTrainers": "Spravovať trénerov",
+    "pendingApprovals": "Čakajúce schválenia",
+    "approve": "Schváliť",
+    "reject": "Zamietnuť",
+    "remove": "Odstrániť",
+    "totalTrainings": "Celkovo tréningov",
+    "totalBookings": "Celkovo rezervácií",
+    "activeTrainers": "Aktívni tréneri"
+  },
+  "common": {
+    "loading": "Načítavam...",
+    "error": "Chyba",
+    "success": "Úspech",
+    "confirm": "Potvrdiť",
+    "cancel": "Zrušiť",
+    "save": "Uložiť",
+    "edit": "Upraviť",
+    "delete": "Vymazať",
+    "close": "Zavrieť",
+    "search": "Hľadať",
+    "filter": "Filtrovať",
+    "select": "Vybrať"
+  }
+}
+
+
+

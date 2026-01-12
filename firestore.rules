@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isTrainer() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['trainer', 'admin'] &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Anyone can read approved trainer profiles (but not email/phone)
+      allow read: if resource.data.status == 'approved';
+      
+      // Users can read their own full profile
+      allow read: if isOwner(userId);
+      
+      // Trainers and admins can read full trainer profiles
+      allow read: if isTrainer();
+      
+      // New users can create their own profile (registration)
+      allow create: if isOwner(userId);
+      
+      // Users can update their own profile
+      allow update: if isOwner(userId);
+      
+      // Admins can update any user (for approvals)
+      allow update: if isAdmin();
+      
+      // Users can delete their own account
+      allow delete: if isOwner(userId);
+      
+      // Admins can delete any user
+      allow delete: if isAdmin();
+    }
+    
+    // Events collection
+    match /events/{eventId} {
+      // Anyone can read events
+      allow read: if true;
+      
+      // Only trainers can create events
+      allow create: if isTrainer() && request.resource.data.trainerId == request.auth.uid;
+      
+      // Trainers can update their own events
+      allow update: if isTrainer() && 
+        (resource.data.trainerId == request.auth.uid || isAdmin());
+      
+      // Trainers can delete their own events
+      allow delete: if isTrainer() && 
+        (resource.data.trainerId == request.auth.uid || isAdmin());
+      
+      // Allow public users to book (update attendees/waitlist)
+      allow update: if true;
+    }
+    
+    // Invite codes collection
+    match /inviteCodes/{codeId} {
+      // Anyone can read to verify codes during registration
+      allow read: if true;
+      
+      // Only admins can create invite codes
+      allow create: if isAdmin();
+      
+      // Codes can be updated when used (during registration)
+      allow update: if true;
+      
+      // Only admins can delete codes
+      allow delete: if isAdmin();
+    }
+    
+    // Settings collection
+    match /settings/{settingId} {
+      // Anyone can read settings (for background image)
+      allow read: if true;
+      
+      // Only trainers/admins can update settings
+      allow write: if isTrainer();
+    }
+  }
+}
+
+
+

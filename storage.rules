@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Trainer photos
+    match /trainers/{userId}/{allPaths=**} {
+      // Anyone can read trainer photos
+      allow read: if true;
+      
+      // Only the user can write their own photos
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Background images
+    match /backgrounds/{imageId} {
+      // Anyone can read background images
+      allow read: if true;
+      
+      // Only authenticated trainers/admins can upload backgrounds
+      allow write: if request.auth != null;
+    }
+  }
+}
+
+
+

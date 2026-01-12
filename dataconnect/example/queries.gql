@@ -1,0 +1,48 @@
+mutation CreateUser @auth(level: USER) {
+  user_insert(data: {
+    displayName: "New User",
+    email: "newuser@example.com",
+    userType: "client",
+    createdAt_expr: "request.time",
+    id_expr: "uuidV4()"
+  })
+}
+
+query ListTrainers @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  trainerProfiles {
+    id
+    user {
+      displayName
+      email
+    }
+    experienceYears
+    hourlyRate
+    location
+  }
+}
+
+mutation CreateReservation($trainerId: UUID!, $reservationDate: Date!, $startTime: String!, $endTime: String!, $status: String!) @auth(level: USER) {
+  reservation_insert(data: {
+    clientId_expr: "auth.uid",
+    trainerId: $trainerId,
+    reservationDate: $reservationDate,
+    startTime: $startTime,
+    endTime: $endTime,
+    status: $status,
+    createdAt_expr: "request.time",
+    id_expr: "uuidV4()"
+  })
+}
+
+query GetMyReviews @auth(level: USER) {
+  reviews(where: {clientId: {eq_expr: "auth.uid"}}) {
+    id
+    trainer {
+      user {
+        displayName
+      }
+    }
+    comment
+    rating
+  }
+}

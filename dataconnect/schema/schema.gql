@@ -1,0 +1,43 @@
+type User @table {
+  displayName: String!
+  email: String!
+  userType: String!
+  createdAt: Timestamp!
+  photoUrl: String
+  bio: String
+  specializations: [String]
+}
+
+type TrainerProfile @table {
+  user: User!
+  hourlyRate: Float!
+  location: String!
+  certifications: [String]
+  experienceYears: Int
+}
+
+type Availability @table {
+  trainer: TrainerProfile!
+  dayOfWeek: String!
+  startTime: String!
+  endTime: String!
+}
+
+type Reservation @table {
+  client: User!
+  trainer: TrainerProfile!
+  reservationDate: Date!
+  startTime: String!
+  endTime: String!
+  status: String!
+  createdAt: Timestamp!
+}
+
+type Review @table {
+  client: User!
+  trainer: TrainerProfile!
+  reservation: Reservation!
+  rating: Int!
+  createdAt: Timestamp!
+  comment: String
+}
