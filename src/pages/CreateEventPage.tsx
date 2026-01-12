@@ -51,7 +51,7 @@ export default function CreateEventPage() {
           if (eventDoc.exists()) {
             const eventData = eventDoc.data() as Event
             const eventDate = eventData.date && typeof eventData.date === 'object' && 'toDate' in eventData.date 
-              ? eventData.date.toDate() 
+              ? (eventData.date as any).toDate() 
               : new Date(eventData.date)
             
             setFormData({
