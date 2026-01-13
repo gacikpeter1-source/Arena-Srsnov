@@ -46,19 +46,41 @@ export default function HomePage() {
   }, [])
 
   const getEventStatus = (event: Event) => {
-    const confirmedCount = event.attendees?.length || 0
-    const isFull = event.capacity !== null && event.capacity !== undefined && confirmedCount >= event.capacity
+    // Calculate total capacity and current count from multi-trainer system
+    let totalCapacity = 0
+    let totalCurrent = 0
+    let hasUnlimited = false
     
-    if (isFull) {
-      return { text: t('home.full'), color: 'text-red-400' }
+    if (event.trainers && typeof event.trainers === 'object') {
+      Object.values(event.trainers).forEach((slot: any) => {
+        totalCurrent += slot.currentCount || 0
+        if (slot.capacity === -1) {
+          hasUnlimited = true
+        } else {
+          totalCapacity += slot.capacity || 0
+        }
+      })
     }
     
-    if (event.capacity === null) {
-      return { text: t('home.unlimited'), color: 'text-green-400' }
+    // If any trainer has unlimited capacity, the event is unlimited
+    if (hasUnlimited) {
+      return { 
+        text: `${totalCurrent}/∞`,
+        color: 'text-green-400'
+      }
+    }
+    
+    const isFull = totalCurrent >= totalCapacity && totalCapacity > 0
+    
+    if (isFull) {
+      return { 
+        text: `${totalCurrent}/${totalCapacity}`,
+        color: 'text-red-400'
+      }
     }
     
     return { 
-      text: t('home.spotsAvailable', { available: confirmedCount, total: event.capacity }),
+      text: `${totalCurrent}/${totalCapacity}`,
       color: 'text-green-400'
     }
   }
@@ -113,8 +135,24 @@ export default function HomePage() {
           <div className="grid gap-4">
             {upcomingEvents.map(event => {
               const status = getEventStatus(event)
-              const confirmedCount = event.attendees?.length || 0
-              const isFull = event.capacity !== null && event.capacity !== undefined && confirmedCount >= event.capacity
+              
+              // Calculate if event is full
+              let totalCapacity = 0
+              let totalCurrent = 0
+              let hasUnlimited = false
+              
+              if (event.trainers && typeof event.trainers === 'object') {
+                Object.values(event.trainers).forEach((slot: any) => {
+                  totalCurrent += slot.currentCount || 0
+                  if (slot.capacity === -1) {
+                    hasUnlimited = true
+                  } else {
+                    totalCapacity += slot.capacity || 0
+                  }
+                })
+              }
+              
+              const isFull = !hasUnlimited && totalCurrent >= totalCapacity && totalCapacity > 0
               
               return (
                 <Link key={event.id} to={`/events/${event.id}`}>
