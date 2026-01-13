@@ -9,10 +9,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ChevronLeft, ChevronRight, Calendar, Clock, Users, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar, Clock, Users, Plus, Search } from 'lucide-react'
 import { formatDate, formatTime, addDays, getWeekStart, isSameDay } from '@/lib/utils'
 import CalendarWeekGrid from '@/components/CalendarWeekGrid'
 import CancelRegistrationDialog from '@/components/CancelRegistrationDialog'
+import SearchRegistrationsDialog from '@/components/SearchRegistrationsDialog'
 
 export default function CalendarPage() {
   const { t } = useTranslation()
@@ -30,6 +31,7 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true)
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
   const [selectedEventForCancel, setSelectedEventForCancel] = useState<string | null>(null)
+  const [searchDialogOpen, setSearchDialogOpen] = useState(false)
 
   useEffect(() => {
     // Get trainer from URL params
@@ -271,9 +273,19 @@ export default function CalendarPage() {
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Button
+            onClick={() => setSearchDialogOpen(true)}
+            variant="outline"
+            className="w-full sm:w-auto text-white border-primary/50 hover:bg-primary/10 hover:border-primary whitespace-nowrap"
+          >
+            <Search className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">{t('search.searchButton')}</span>
+            <span className="sm:hidden">{t('search.search')}</span>
+          </Button>
+          
           <Select value={selectedTrainer} onValueChange={handleTrainerChange}>
-            <SelectTrigger className="w-[200px] bg-white/10 border-white/20 text-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white/10 border-white/20 text-white">
               <SelectValue placeholder={t('calendar.allTrainers')} />
             </SelectTrigger>
             <SelectContent>
@@ -287,6 +299,12 @@ export default function CalendarPage() {
           </Select>
         </div>
       </div>
+      
+      {/* Search Dialog */}
+      <SearchRegistrationsDialog
+        isOpen={searchDialogOpen}
+        onClose={() => setSearchDialogOpen(false)}
+      />
 
       {/* View Tabs */}
       <Tabs value={view} onValueChange={handleViewChange} className="mb-6">

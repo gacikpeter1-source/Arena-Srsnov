@@ -93,27 +93,34 @@ export default function HomePage() {
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        <Link to="/trainers">
-          <Button 
-            size="lg" 
-            className="w-full h-28 text-lg bg-primary hover:bg-primary-gold text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all"
-          >
-            <Users className="mr-3 h-7 w-7" />
-            {t('home.selectByTrainer')}
-          </Button>
-        </Link>
+      <div className="flex flex-col items-center gap-6 mb-12">
+        <div className="w-full max-w-md">
+          <Link to="/trainers">
+            <Button 
+              size="lg" 
+              className="w-full h-28 text-lg bg-primary hover:bg-primary-gold text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all"
+            >
+              <Users className="mr-3 h-7 w-7" />
+              {t('home.selectByTrainer')}
+            </Button>
+          </Link>
+        </div>
         
-        <Link to="/calendar">
-          <Button 
-            size="lg" 
-            className="w-full h-28 text-lg bg-background-card hover:bg-background-cardHover text-white border-2 border-primary font-semibold shadow-lg hover:shadow-xl transition-all"
-            variant="outline"
-          >
-            <Calendar className="mr-3 h-7 w-7" />
-            {t('home.openCalendar')}
-          </Button>
-        </Link>
+        <div className="text-white text-base font-semibold tracking-wide opacity-70">
+          {t('home.or')}
+        </div>
+        
+        <div className="w-full max-w-md">
+          <Link to="/calendar">
+            <Button 
+              size="lg" 
+              className="w-full h-28 text-lg bg-primary hover:bg-primary-gold text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all"
+            >
+              <Calendar className="mr-3 h-7 w-7" />
+              {t('home.selectByDate')}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Upcoming Trainings */}

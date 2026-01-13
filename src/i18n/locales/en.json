@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Aréna Sršňov",
-    "subtitle": "Hockey Training Reservations"
+    "subtitle": "Trainings Reservations"
   },
   "nav": {
     "home": "Home",
@@ -18,7 +18,8 @@
     "upcomingTrainings": "Upcoming Trainings",
     "noTrainings": "No upcoming trainings",
     "selectByTrainer": "Select Training by Trainer",
-    "openCalendar": "Open Calendar",
+    "selectByDate": "Select Training by Date",
+    "or": "OR",
     "spotsAvailable": "{{available}} of {{total}} spots",
     "unlimited": "Unlimited",
     "full": "Full",
@@ -164,6 +165,29 @@
     "totalTrainings": "Total Trainings",
     "totalBookings": "Total Bookings",
     "activeTrainers": "Active Trainers"
+  },
+  "search": {
+    "title": "Find Your Registrations",
+    "searchButton": "Search My Events",
+    "searchBy": "Search by:",
+    "email": "Email",
+    "phone": "Phone Number",
+    "enterEmail": "Enter your email",
+    "enterPhone": "Enter your phone number",
+    "enterValue": "Please enter a search value",
+    "search": "Search",
+    "searching": "Searching...",
+    "results": "Results",
+    "noResults": "No registrations found",
+    "tip": "Make sure you're using the same email/phone you registered with",
+    "registrationCode": "Registration Code",
+    "position": "Position",
+    "viewDetails": "View Details",
+    "cancelRegistration": "Cancel Registration",
+    "leaveWaitlist": "Leave Waitlist",
+    "confirmCancel": "Are you sure you want to cancel this registration?",
+    "cancelSuccess": "Registration cancelled successfully",
+    "searchError": "Error searching registrations"
   },
   "cancelRegistration": {
     "title": "Cancel Registration",

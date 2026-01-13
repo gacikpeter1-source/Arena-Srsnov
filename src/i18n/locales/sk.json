@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Aréna Sršňov",
-    "subtitle": "Rezervácia hokejových tréningov"
+    "subtitle": "Rezervácia tréningov"
   },
   "nav": {
     "home": "Domov",
@@ -18,7 +18,8 @@
     "upcomingTrainings": "Nadchádzajúce tréningy",
     "noTrainings": "Žiadne nadchádzajúce tréningy",
     "selectByTrainer": "Vybrať tréning podľa trénera",
-    "openCalendar": "Otvoriť kalendár",
+    "selectByDate": "Vybrať tréning podľa dátumu",
+    "or": "ALEBO",
     "spotsAvailable": "{{available}} z {{total}} miest",
     "unlimited": "Neobmedzené",
     "full": "Plné",
@@ -164,6 +165,29 @@
     "totalTrainings": "Celkovo tréningov",
     "totalBookings": "Celkovo rezervácií",
     "activeTrainers": "Aktívni tréneri"
+  },
+  "search": {
+    "title": "Nájsť moje registrácie",
+    "searchButton": "Vyhľadať moje podujatia",
+    "searchBy": "Vyhľadať podľa:",
+    "email": "Email",
+    "phone": "Telefónne číslo",
+    "enterEmail": "Zadajte váš email",
+    "enterPhone": "Zadajte vaše telefónne číslo",
+    "enterValue": "Prosím zadajte hodnotu na vyhľadávanie",
+    "search": "Vyhľadať",
+    "searching": "Vyhľadávam...",
+    "results": "Výsledky",
+    "noResults": "Neboli nájdené žiadne registrácie",
+    "tip": "Uistite sa, že používate rovnaký email/telefón, s ktorým ste sa registrovali",
+    "registrationCode": "Registračné číslo",
+    "position": "Pozícia",
+    "viewDetails": "Zobraziť detaily",
+    "cancelRegistration": "Zrušiť registráciu",
+    "leaveWaitlist": "Opustiť čakaciu listinu",
+    "confirmCancel": "Ste si istí, že chcete zrušiť túto registráciu?",
+    "cancelSuccess": "Registrácia úspešne zrušená",
+    "searchError": "Chyba pri vyhľadávaní registrácií"
   },
   "cancelRegistration": {
     "title": "Zrušenie registrácie",
