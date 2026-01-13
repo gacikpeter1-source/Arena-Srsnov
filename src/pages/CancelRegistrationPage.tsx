@@ -45,7 +45,7 @@ export default function CancelRegistrationPage() {
         }
 
         const registrationDoc = registrationSnap.docs[0]
-        const registrationData = {
+        const registrationData: any = {
           id: registrationDoc.id,
           ...registrationDoc.data()
         }
@@ -58,7 +58,7 @@ export default function CancelRegistrationPage() {
         }
 
         // Check if token expired
-        const expiresAt = registrationData.tokenExpiresAt?.toDate()
+        const expiresAt = registrationData.tokenExpiresAt?.toDate ? registrationData.tokenExpiresAt.toDate() : null
         if (expiresAt && expiresAt < new Date()) {
           setError(t('cancelRegistration.tokenExpired'))
           setLoading(false)

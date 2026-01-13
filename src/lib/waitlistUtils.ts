@@ -250,24 +250,35 @@ export async function cancelRegistration(registrationId: string): Promise<void> 
     // Send cancellation confirmation email BEFORE deleting registration
     if (eventData) {
       try {
-        // Format date properly (handle Timestamp or string)
-        let formattedDate = eventData.date
-        if (typeof eventData.date === 'object' && eventData.date?.toDate) {
-          // It's a Timestamp, convert to readable format
-          const dateObj = eventData.date.toDate()
+        // Format date properly (handle Timestamp, Date, or string)
+        let formattedDate: string
+        const dateValue: any = eventData.date
+        
+        if (dateValue && typeof dateValue === 'object' && typeof dateValue.toDate === 'function') {
+          // It's a Firestore Timestamp, convert to readable format
+          const dateObj = dateValue.toDate()
           formattedDate = dateObj.toLocaleDateString('sk-SK', { 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
           })
-        } else if (typeof eventData.date === 'string') {
+        } else if (dateValue instanceof Date) {
+          // It's already a Date object
+          formattedDate = dateValue.toLocaleDateString('sk-SK', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })
+        } else if (typeof dateValue === 'string') {
           // It's a string like "2026-01-14", format it nicely
-          const dateObj = new Date(eventData.date)
+          const dateObj = new Date(dateValue)
           formattedDate = dateObj.toLocaleDateString('sk-SK', { 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
           })
+        } else {
+          formattedDate = String(dateValue)
         }
         
         const emailData = {
