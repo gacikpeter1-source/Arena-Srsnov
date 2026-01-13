@@ -280,8 +280,7 @@ export default function CalendarPage() {
             className="w-full sm:w-auto text-white border-primary/50 hover:bg-primary/10 hover:border-primary whitespace-nowrap"
           >
             <Search className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">{t('search.searchButton')}</span>
-            <span className="sm:hidden">{t('search.search')}</span>
+            {t('search.searchMyReservations')}
           </Button>
           
           <Select value={selectedTrainer} onValueChange={handleTrainerChange}>

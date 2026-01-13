@@ -12,7 +12,8 @@
     "settings": "Nastavenia",
     "profile": "Profil",
     "admin": "Administrácia",
-    "back": "Späť"
+    "back": "Späť",
+    "language": "Jazyk"
   },
   "home": {
     "upcomingTrainings": "Nadchádzajúce tréningy",
@@ -169,6 +170,7 @@
   "search": {
     "title": "Nájsť moje registrácie",
     "searchButton": "Vyhľadať moje podujatia",
+    "searchMyReservations": "Vyhľadať moje rezervácie",
     "searchBy": "Vyhľadať podľa:",
     "email": "Email",
     "phone": "Telefónne číslo",

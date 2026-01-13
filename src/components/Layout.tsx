@@ -132,12 +132,12 @@ export default function Layout({ children }: LayoutProps) {
 
               <Button
                 variant="ghost"
-                size="icon"
                 onClick={toggleLanguage}
-                className="text-white hover:text-primary hover:bg-primary/10"
+                className="text-white hover:text-primary hover:bg-primary/10 flex flex-col items-center gap-0.5 h-auto py-2 px-3"
                 title={i18n.language === 'sk' ? 'English' : 'Slovenčina'}
               >
                 <Globe className="h-5 w-5" />
+                <span className="text-[10px] leading-none">{t('nav.language')}</span>
               </Button>
             </nav>
 
@@ -145,11 +145,11 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center gap-2 md:hidden">
               <Button
                 variant="ghost"
-                size="icon"
                 onClick={toggleLanguage}
-                className="text-white hover:text-primary hover:bg-primary/10"
+                className="text-white hover:text-primary hover:bg-primary/10 flex flex-col items-center gap-0.5 h-auto py-2 px-3"
               >
                 <Globe className="h-5 w-5" />
+                <span className="text-[10px] leading-none">{t('nav.language')}</span>
               </Button>
               <Button
                 variant="ghost"

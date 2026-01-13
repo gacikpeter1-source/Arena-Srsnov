@@ -12,7 +12,8 @@
     "settings": "Settings",
     "profile": "Profile",
     "admin": "Admin",
-    "back": "Back"
+    "back": "Back",
+    "language": "Language"
   },
   "home": {
     "upcomingTrainings": "Upcoming Trainings",
@@ -169,6 +170,7 @@
   "search": {
     "title": "Find Your Registrations",
     "searchButton": "Search My Events",
+    "searchMyReservations": "Search my reservations",
     "searchBy": "Search by:",
     "email": "Email",
     "phone": "Phone Number",
