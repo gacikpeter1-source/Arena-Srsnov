@@ -161,3 +161,4 @@ export default function JoinEventModal({ event, isOpen, onClose, onSuccess }: Jo
   )
 }
 
+

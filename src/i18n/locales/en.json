@@ -61,6 +61,7 @@
     "attendees": "Attendees",
     "participants": "Participants",
     "confirmedParticipants": "Confirmed Participants",
+    "confirmed": "Confirmed",
     "waitlist": "Waitlist",
     "book": "Book",
     "cancelBooking": "Cancel Booking",
@@ -164,6 +165,24 @@
     "totalBookings": "Total Bookings",
     "activeTrainers": "Active Trainers"
   },
+  "cancelRegistration": {
+    "title": "Cancel Registration",
+    "warning": "Are you sure you want to cancel this registration? This action cannot be undone.",
+    "eventDetails": "Event Details",
+    "registrationDetails": "Your Registration",
+    "registrationCode": "Registration Code",
+    "status": "Status",
+    "confirmCancel": "Confirm Cancellation",
+    "cancelling": "Cancelling...",
+    "success": "Registration Cancelled",
+    "successMessage": "Your registration has been successfully cancelled. If you were confirmed, the next person on the waitlist will be notified.",
+    "redirecting": "Redirecting to home page in 3 seconds...",
+    "invalidLink": "Invalid cancellation link",
+    "notFound": "Registration not found",
+    "invalidToken": "Invalid or expired cancellation token",
+    "tokenExpired": "This cancellation link has expired. Please contact support if you need to cancel.",
+    "alreadyCancelled": "This registration has already been cancelled"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",
@@ -176,7 +195,12 @@
     "close": "Close",
     "search": "Search",
     "filter": "Filter",
-    "select": "Select"
+    "select": "Select",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "trainer": "Trainer",
+    "backToHome": "Back to Home"
   }
 }
 

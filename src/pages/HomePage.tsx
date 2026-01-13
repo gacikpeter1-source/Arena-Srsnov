@@ -168,7 +168,7 @@ export default function HomePage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-2 text-text-secondary">
+                      <div className="space-y-3 text-text-secondary">
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4 text-primary" />
                           <span className="mono">{formatDateTime(event.date)}</span>
@@ -177,10 +177,33 @@ export default function HomePage() {
                           <Clock className="h-4 w-4 text-primary" />
                           <span>{event.duration} min</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-primary" />
-                          <span>{event.trainerName}</span>
-                        </div>
+                        
+                        {/* Trainers with photos */}
+                        {event.trainers && typeof event.trainers === 'object' && (
+                          <div className="pt-2 border-t border-border-default/50">
+                            <div className="text-text-muted text-xs mb-2 font-semibold uppercase tracking-wide">
+                              {Object.keys(event.trainers).length === 1 ? t('common.trainer') : t('events.trainers')}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {Object.values(event.trainers).map((trainerSlot: any, index: number) => (
+                                <div key={index} className="flex items-center gap-2 bg-background-card/50 rounded-full pr-3 py-1 pl-1">
+                                  {trainerSlot.trainerPhoto ? (
+                                    <img
+                                      src={trainerSlot.trainerPhoto}
+                                      alt={trainerSlot.trainerName}
+                                      className="w-8 h-8 rounded-full object-cover border-2 border-primary/50"
+                                    />
+                                  ) : (
+                                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary/50">
+                                      <Users className="h-4 w-4 text-primary" />
+                                    </div>
+                                  )}
+                                  <span className="text-sm text-white font-medium">{trainerSlot.trainerName}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

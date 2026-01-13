@@ -87,3 +87,4 @@ async function cleanupCancelledRegistrations() {
 // Run the cleanup
 cleanupCancelledRegistrations();
 
+

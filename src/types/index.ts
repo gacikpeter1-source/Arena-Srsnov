@@ -87,6 +87,10 @@ export interface Registration {
   uniqueCode: string // 6-digit format "203-776"
   qrCodeData: string // encoded QR data
   
+  // Cancellation token (for email link cancellation)
+  cancellationToken: string // 32-char secure token
+  tokenExpiresAt: Date // token expires after 14 days
+  
   // Status
   status: 'confirmed' | 'waitlist' | 'cancelled'
   position?: number // waitlist position

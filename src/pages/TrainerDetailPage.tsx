@@ -136,8 +136,26 @@ export default function TrainerDetailPage() {
         ) : (
           <div className="grid gap-4">
             {events.map(event => {
-              const confirmedCount = event.attendees?.length || 0
-              const isFull = event.capacity !== null && event.capacity !== undefined && confirmedCount >= event.capacity
+              // Calculate capacity using multi-trainer system
+              let totalCapacity = 0
+              let totalCurrent = 0
+              let hasUnlimited = false
+              
+              if (event.trainers && typeof event.trainers === 'object') {
+                Object.values(event.trainers).forEach((slot: any) => {
+                  totalCurrent += slot.currentCount || 0
+                  if (slot.capacity === -1) {
+                    hasUnlimited = true
+                  } else {
+                    totalCapacity += slot.capacity || 0
+                  }
+                })
+              }
+              
+              const isFull = !hasUnlimited && totalCapacity > 0 && totalCurrent >= totalCapacity
+              const capacityDisplay = hasUnlimited 
+                ? t('home.unlimited')
+                : `${totalCurrent}/${totalCapacity}`
               
               return (
                 <Link key={event.id} to={`/events/${event.id}`}>
@@ -146,10 +164,7 @@ export default function TrainerDetailPage() {
                       <CardTitle className="text-white flex items-start justify-between">
                         <span>{event.title}</span>
                         <span className={`text-sm font-normal ${isFull ? 'text-red-400' : 'text-green-400'}`}>
-                          {event.capacity === null 
-                            ? t('home.unlimited')
-                            : `${confirmedCount}/${event.capacity}`
-                          }
+                          {capacityDisplay}
                         </span>
                       </CardTitle>
                     </CardHeader>

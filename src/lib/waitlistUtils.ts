@@ -191,15 +191,22 @@ export async function cancelRegistration(registrationId: string): Promise<void> 
     }
 
     const registration = registrationDoc.data() as Registration
-    const { eventId, trainerId, status, position } = registration
+    const { eventId, trainerId, status, position, name, email, uniqueCode } = registration
+
+    // Fetch event details BEFORE deletion (needed for email)
+    const eventRef = doc(db, 'events', eventId)
+    const eventDoc = await getDoc(eventRef)
+    let eventData: Event | null = null
+    let trainerName = 'Tréner'
+    
+    if (eventDoc.exists()) {
+      eventData = eventDoc.data() as Event
+      trainerName = eventData.trainers[trainerId]?.trainerName || 'Tréner'
+    }
 
     // If this was a confirmed registration, update trainer currentCount and promote from waitlist
     if (status === 'confirmed') {
-      const eventRef = doc(db, 'events', eventId)
-      const eventDoc = await getDoc(eventRef)
-      
-      if (eventDoc.exists()) {
-        const eventData = eventDoc.data() as Event
+      if (eventDoc.exists() && eventData) {
         const trainerSlot = eventData.trainers[trainerId]
         
         if (trainerSlot) {
@@ -240,13 +247,132 @@ export async function cancelRegistration(registrationId: string): Promise<void> 
       await Promise.all(updatePromises)
     }
 
+    // Send cancellation confirmation email BEFORE deleting registration
+    if (eventData) {
+      try {
+        // Format date properly (handle Timestamp or string)
+        let formattedDate = eventData.date
+        if (typeof eventData.date === 'object' && eventData.date?.toDate) {
+          // It's a Timestamp, convert to readable format
+          const dateObj = eventData.date.toDate()
+          formattedDate = dateObj.toLocaleDateString('sk-SK', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })
+        } else if (typeof eventData.date === 'string') {
+          // It's a string like "2026-01-14", format it nicely
+          const dateObj = new Date(eventData.date)
+          formattedDate = dateObj.toLocaleDateString('sk-SK', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })
+        }
+        
+        const emailData = {
+          to: email,
+          message: {
+            subject: 'Zrušenie registrácie - Aréna Sršňov',
+            html: `
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <style>
+                  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                  .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                  .header { background: #1a1a1a; color: #FDB913; padding: 20px; text-align: center; }
+                  .content { background: #f9f9f9; padding: 20px; }
+                  .info-row { margin: 10px 0; padding: 10px; background: white; border-left: 4px solid #dc2626; }
+                  .label { font-weight: bold; color: #666; }
+                  .value { color: #000; }
+                  .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                  .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; background: #dc2626; color: white; }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <div class="header">
+                    <h1>🏒 Aréna Sršňov</h1>
+                    <h2>Zrušenie registrácie</h2>
+                  </div>
+                  
+                  <div class="content">
+                    <p>Dobrý deň, <strong>${name}</strong>!</p>
+                    
+                    <p>Vaša registrácia bola úspešne <span class="status-badge">ZRUŠENÁ</span> pre nasledujúci tréning:</p>
+                    
+                    <div class="info-row">
+                      <span class="label">Tréning:</span>
+                      <span class="value">${eventData.title}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                      <span class="label">Dátum:</span>
+                      <span class="value">${formattedDate}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                      <span class="label">Čas:</span>
+                      <span class="value">${eventData.startTime}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                      <span class="label">Trvanie:</span>
+                      <span class="value">${eventData.duration} minút</span>
+                    </div>
+                    
+                    <div class="info-row">
+                      <span class="label">Tréner:</span>
+                      <span class="value">${trainerName}</span>
+                    </div>
+                    
+                    <div class="info-row" style="border-left-color: #dc2626; background: #fee;">
+                      <span class="label">Vaše registračné číslo:</span>
+                      <span class="value" style="font-size: 18px; font-weight: bold; color: #dc2626;">${uniqueCode}</span>
+                    </div>
+                    
+                    ${status === 'confirmed' ? `
+                      <div style="margin-top: 20px; padding: 15px; background: #dbeafe; border-radius: 5px;">
+                        <p style="margin: 0; font-size: 14px;">
+                          <strong>ℹ️ Informácia:</strong> Vaše miesto bolo uvoľnené a ďalšia osoba z čakacej listiny bola upovedomená.
+                        </p>
+                      </div>
+                    ` : ''}
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 5px;">
+                      <p style="margin: 0; font-size: 14px;">
+                        <strong>💡 Tip:</strong> Ak si to rozmyslíte, môžete sa znovu zaregistrovať cez našu aplikáciu.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div class="footer">
+                    <p>Tento email bol automaticky vygenerovaný systémom Aréna Sršňov.</p>
+                    <p style="font-size: 11px; color: #999; margin-top: 10px;">
+                      Ďakujeme za používanie našej aplikácie!
+                    </p>
+                    <p>&copy; ${new Date().getFullYear()} Aréna Sršňov. Všetky práva vyhradené.</p>
+                  </div>
+                </div>
+              </body>
+              </html>
+            `
+          }
+        }
+        
+        await addDoc(collection(db, 'mail'), emailData)
+        console.log('✅ Cancellation confirmation email queued for:', email)
+      } catch (emailError) {
+        console.warn('⚠️ Could not send cancellation email:', emailError)
+        // Don't fail the cancellation if email fails
+      }
+    }
+
     // DELETE the registration document from Firestore
     await deleteDoc(registrationRef)
 
     console.log(`✅ Deleted registration ${registrationId} from Firestore`)
-
-    // TODO: Send cancellation confirmation email
-    // This would be implemented in a Firebase Function
     
   } catch (error) {
     console.error('Error cancelling registration:', error)

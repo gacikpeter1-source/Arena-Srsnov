@@ -61,6 +61,7 @@
     "attendees": "Účastníci",
     "participants": "Účastníci",
     "confirmedParticipants": "Potvrdení účastníci",
+    "confirmed": "Potvrdené",
     "waitlist": "Čakacia listina",
     "book": "Rezervovať",
     "cancelBooking": "Zrušiť rezerváciu",
@@ -164,6 +165,24 @@
     "totalBookings": "Celkovo rezervácií",
     "activeTrainers": "Aktívni tréneri"
   },
+  "cancelRegistration": {
+    "title": "Zrušenie registrácie",
+    "warning": "Ste si istí, že chcete zrušiť túto registráciu? Túto akciu nie je možné vrátiť späť.",
+    "eventDetails": "Detaily tréningu",
+    "registrationDetails": "Vaša registrácia",
+    "registrationCode": "Registračné číslo",
+    "status": "Stav",
+    "confirmCancel": "Potvrdiť zrušenie",
+    "cancelling": "Ruším...",
+    "success": "Registrácia zrušená",
+    "successMessage": "Vaša registrácia bola úspešne zrušená. Ak ste boli potvrdení, ďalšia osoba na čakacej listine bude upovedomená.",
+    "redirecting": "Presmerovanie na domovskú stránku o 3 sekundy...",
+    "invalidLink": "Neplatný odkaz na zrušenie",
+    "notFound": "Registrácia nebola nájdená",
+    "invalidToken": "Neplatný alebo vypršaný token na zrušenie",
+    "tokenExpired": "Tento odkaz na zrušenie vypršal. Ak potrebujete zrušiť registráciu, kontaktujte podporu.",
+    "alreadyCancelled": "Táto registrácia už bola zrušená"
+  },
   "common": {
     "loading": "Načítavam...",
     "error": "Chyba",
@@ -176,7 +195,12 @@
     "close": "Zavrieť",
     "search": "Hľadať",
     "filter": "Filtrovať",
-    "select": "Vybrať"
+    "select": "Vybrať",
+    "name": "Meno",
+    "email": "Email",
+    "phone": "Telefón",
+    "trainer": "Tréner",
+    "backToHome": "Späť na domovskú stránku"
   }
 }
 

@@ -51,6 +51,16 @@ export default function RegistrationForm({
     return `${part1}-${part2}`
   }
 
+  const generateCancellationToken = (): string => {
+    // Generate secure random token (32 characters)
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let token = ''
+    for (let i = 0; i < 32; i++) {
+      token += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return token
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -67,6 +77,7 @@ export default function RegistrationForm({
     try {
       const uniqueCode = generateUniqueCode()
       const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      const cancellationToken = generateCancellationToken()
       
       // Generate QR code data
       const qrCodeData = `arena-srsnov://register?event=${event.id}&trainer=${trainerId}&user=${userId}&code=${uniqueCode}`
@@ -86,6 +97,8 @@ export default function RegistrationForm({
         uniqueCode: uniqueCode,
         qrCodeData: qrCodeData,
         status: status,
+        cancellationToken: cancellationToken,
+        tokenExpiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days
         registeredAt: new Date()
       }
 
@@ -95,7 +108,8 @@ export default function RegistrationForm({
         registrationData.position = nextPosition
       }
 
-      await addDoc(collection(db, 'registrations'), registrationData)
+      const registrationRef = await addDoc(collection(db, 'registrations'), registrationData)
+      const registrationId = registrationRef.id
 
       // Update trainer's current count
       const eventRef = doc(db, 'events', event.id)
@@ -205,11 +219,26 @@ export default function RegistrationForm({
                         <strong>💡 Tip:</strong> Prihláste sa do aplikácie a nájdite tento tréning v kalendári pre viac detailov.
                       </p>
                     </div>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: white; border: 2px solid #e5e7eb; border-radius: 8px; text-align: center;">
+                      <p style="margin: 0 0 15px 0; font-size: 14px; color: #666;">
+                        Potrebujete zrušiť registráciu?
+                      </p>
+                      <a href="${typeof window !== 'undefined' ? window.location.origin : 'https://arena-srsnov.vercel.app'}/my-registration/${registrationId}/${cancellationToken}" 
+                         style="display: inline-block; padding: 12px 30px; background: #dc2626; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">
+                        Zrušiť registráciu
+                      </a>
+                      <p style="margin: 15px 0 0 0; font-size: 12px; color: #999;">
+                        Tento odkaz vyprší o 14 dní
+                      </p>
+                    </div>
                   </div>
                   
                   <div class="footer">
                     <p>Tento email bol automaticky vygenerovaný systémom Aréna Sršňov.</p>
-                    <p>Pre zrušenie registrácie navštívte našu aplikáciu.</p>
+                    <p style="font-size: 11px; color: #999; margin-top: 10px;">
+                      Ak ste túto registráciu nevykonali, ignorujte tento email.
+                    </p>
                     <p>&copy; ${new Date().getFullYear()} Aréna Sršňov. Všetky práva vyhradené.</p>
                   </div>
                 </div>

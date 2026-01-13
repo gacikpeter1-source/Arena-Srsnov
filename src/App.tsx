@@ -13,6 +13,7 @@ import CreateEventPage from './pages/CreateEventPage'
 import SettingsPage from './pages/SettingsPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import CancelRegistrationPage from './pages/CancelRegistrationPage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/events/:eventId" element={<EventDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/my-registration/:registrationId/:token" element={<CancelRegistrationPage />} />
             
             {/* Protected routes for trainers/admin */}
             <Route 
@@ -79,6 +81,7 @@ function App() {
 }
 
 export default App
+
 
 
 
