@@ -46,7 +46,7 @@ export interface Event {
   
   createdBy: string
   createdAt: Date
-  updatedAt: Date
+  updatedAt?: Date // Optional since not all events have it
 }
 
 export interface Attendee {

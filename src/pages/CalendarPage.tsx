@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ChevronLeft, ChevronRight, Calendar, Clock, Users, Plus } from 'lucide-react'
-import { formatDate, formatTime, addDays, getWeekStart, getWeekDays, isSameDay } from '@/lib/utils'
+import { formatDate, formatTime, addDays, getWeekStart, isSameDay } from '@/lib/utils'
 import CalendarWeekGrid from '@/components/CalendarWeekGrid'
 import CancelRegistrationDialog from '@/components/CancelRegistrationDialog'
 

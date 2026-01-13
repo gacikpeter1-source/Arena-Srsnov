@@ -9,7 +9,6 @@ import { getWeekStart, addDays, isSameDay } from '@/lib/utils'
 interface CalendarWeekGridProps {
   currentDate: Date
   selectedTrainerId?: string
-  onScrollToToday?: () => void
 }
 
 interface TimeSlot {
@@ -24,7 +23,7 @@ interface WeekData {
   timeSlots: TimeSlot[]
 }
 
-export default function CalendarWeekGrid({ currentDate, selectedTrainerId, onScrollToToday }: CalendarWeekGridProps) {
+export default function CalendarWeekGrid({ currentDate, selectedTrainerId }: CalendarWeekGridProps) {
   const { t, i18n } = useTranslation()
   const [weeks, setWeeks] = useState<WeekData[]>([])
   const [loading, setLoading] = useState(true)
@@ -255,7 +254,7 @@ export default function CalendarWeekGrid({ currentDate, selectedTrainerId, onScr
         ) : (
           weekData.timeSlots.map((slot, slotIndex) => (
             <div key={slotIndex} className="grid grid-cols-7 gap-1 mb-1">
-              {weekData.weekDays.map((day, dayIndex) => {
+              {weekData.weekDays.map((_day, dayIndex) => {
                 const dayEvents = slot.events[dayIndex] || []
                 
                 return (
