@@ -59,7 +59,7 @@ export default function SearchRegistrationsDialog({ isOpen, onClose }: SearchReg
       // Fetch event details for each registration
       const registrationsWithEvents = await Promise.all(
         registrationSnap.docs.map(async (regDoc) => {
-          const regData = {
+          const regData: any = {
             id: regDoc.id,
             ...regDoc.data()
           }
