@@ -224,7 +224,7 @@ export default function RegistrationForm({
                       <p style="margin: 0 0 15px 0; font-size: 14px; color: #666;">
                         Potrebujete zrušiť registráciu?
                       </p>
-                      <a href="${typeof window !== 'undefined' ? window.location.origin : 'https://arena-srsnov.vercel.app'}/my-registration/${registrationId}/${cancellationToken}" 
+                      <a href="https://arena-srsnov.vercel.app/my-registration/${registrationId}/${cancellationToken}" 
                          style="display: inline-block; padding: 12px 30px; background: #dc2626; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">
                         Zrušiť registráciu
                       </a>
