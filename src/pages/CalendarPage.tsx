@@ -4,15 +4,19 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { collection, query, where, orderBy, getDocs, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Event, User } from '@/types'
+import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ChevronLeft, ChevronRight, Calendar, Clock, Users } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar, Clock, Users, Plus, X } from 'lucide-react'
 import { formatDate, formatTime, addDays, getWeekStart, getWeekDays, isSameDay } from '@/lib/utils'
+import CalendarWeekGrid from '@/components/CalendarWeekGrid'
+import CancelRegistrationDialog from '@/components/CancelRegistrationDialog'
 
 export default function CalendarPage() {
   const { t } = useTranslation()
+  const { isTrainer } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const [view, setView] = useState<'day' | 'week'>(
     (searchParams.get('view') as 'day' | 'week') || 'week'
@@ -24,6 +28,8 @@ export default function CalendarPage() {
     searchParams.get('trainer') || 'all'
   )
   const [loading, setLoading] = useState(true)
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
+  const [selectedEventForCancel, setSelectedEventForCancel] = useState<string | null>(null)
 
   useEffect(() => {
     // Get trainer from URL params
@@ -32,6 +38,18 @@ export default function CalendarPage() {
       setSelectedTrainer(trainerParam)
     }
   }, [searchParams])
+
+  // Refetch events when page becomes visible (e.g., after navigating back)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchEvents()
+      }
+    }
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [currentDate, selectedTrainer, view])
 
   useEffect(() => {
     const fetchTrainers = async () => {
@@ -141,10 +159,17 @@ export default function CalendarPage() {
 
   const getEventColor = (event: Event) => {
     const now = new Date()
-    if (event.date < now) return 'bg-gray-500/20 border-gray-500'
+    const eventDate = typeof event.date === 'string' ? new Date(event.date) : event.date
+    if (eventDate < now) return 'bg-gray-500/20 border-gray-500'
     
-    const confirmedCount = event.attendees?.length || 0
-    const isFull = event.capacity !== null && confirmedCount >= event.capacity
+    // Check if any trainer in the event is full
+    let isFull = false
+    if (event.trainers) {
+      isFull = Object.values(event.trainers).some(slot => {
+        if (slot.capacity === -1) return false // Unlimited
+        return slot.currentCount >= slot.capacity
+      })
+    }
     
     return isFull ? 'bg-red-500/20 border-red-500' : 'bg-green-500/20 border-green-500'
   }
@@ -162,35 +187,55 @@ export default function CalendarPage() {
             </CardContent>
           </Card>
         ) : (
-          dayEvents.map(event => (
-            <Link key={event.id} to={`/events/${event.id}`}>
-              <Card className={`${getEventColor(event)} hover:opacity-80 border-2 transition-colors cursor-pointer`}>
-                <CardHeader>
-                  <CardTitle className="text-white flex items-start justify-between">
-                    <span>{event.title}</span>
-                    <span className="text-sm font-normal">
-                      {event.capacity === null
-                        ? '∞'
-                        : `${event.attendees?.length || 0}/${event.capacity}`
-                      }
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-white/90">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      <span>{formatTime(event.date)} ({event.duration} min)</span>
+          dayEvents.map(event => {
+            // Calculate total capacity and current count
+            let totalCapacity = 0
+            let totalCurrent = 0
+            let hasUnlimited = false
+            
+            if (event.trainers) {
+              Object.values(event.trainers).forEach(slot => {
+                totalCurrent += slot.currentCount || 0
+                if (slot.capacity === -1) {
+                  hasUnlimited = true
+                } else {
+                  totalCapacity += slot.capacity || 0
+                }
+              })
+            }
+            
+            // Format capacity display
+            const capacityDisplay = hasUnlimited 
+              ? `${totalCurrent}/∞`
+              : `${totalCurrent}/${totalCapacity}`
+            
+            return (
+              <Link key={event.id} to={`/events/${event.id}`}>
+                <Card className={`${getEventColor(event)} hover:opacity-80 border-2 transition-colors cursor-pointer`}>
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-start justify-between">
+                      <span>{event.title}</span>
+                      <span className="text-sm font-normal">
+                        {capacityDisplay}
+                      </span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-white/90">
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        <span>{formatTime(event.date)} ({event.duration} min)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span>{Object.keys(event.trainers || {}).length} {Object.keys(event.trainers || {}).length === 1 ? 'Trainer' : 'Trainers'}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      <span>{event.trainerName}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))
+                  </CardContent>
+                </Card>
+              </Link>
+            )
+          })
         )}
       </div>
     )
@@ -221,10 +266,7 @@ export default function CalendarPage() {
                         <div className="font-semibold truncate">{event.title}</div>
                         <div className="text-white/70">{formatTime(event.date)}</div>
                         <div className="text-white/70">
-                          {event.capacity === null
-                            ? '∞'
-                            : `${event.attendees?.length || 0}/${event.capacity}`
-                          }
+                          {Object.keys(event.trainers || {}).length}T
                         </div>
                       </div>
                     </Card>
@@ -240,23 +282,41 @@ export default function CalendarPage() {
 
   return (
     <div className="content-container py-8">
-      <h1 className="text-white mb-6">{t('calendar.title')}</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-white">{t('calendar.title')}</h1>
+        {isTrainer && (
+          <Link to="/events/create">
+            <Button className="bg-primary hover:bg-primary-gold text-primary-foreground">
+              <Plus className="h-5 w-5 mr-2" />
+              {t('events.createEvent')}
+            </Button>
+          </Link>
+        )}
+      </div>
 
       {/* Controls */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button onClick={goToPrevious} variant="outline" size="icon" className="text-white border-white/20 hover:bg-white/10">
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
+          {view === 'day' && (
+            <>
+              <Button onClick={goToPrevious} variant="outline" size="icon" className="text-white border-white/20 hover:bg-white/10">
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+            </>
+          )}
           <Button onClick={goToToday} variant="outline" className="text-white border-white/20 hover:bg-white/10">
             {t('calendar.today')}
           </Button>
-          <Button onClick={goToNext} variant="outline" size="icon" className="text-white border-white/20 hover:bg-white/10">
-            <ChevronRight className="h-5 w-5" />
-          </Button>
-          <span className="text-white ml-4 font-semibold">
-            {view === 'day' ? formatDate(currentDate) : `${formatDate(getWeekStart(currentDate))} - ${formatDate(addDays(getWeekStart(currentDate), 6))}`}
-          </span>
+          {view === 'day' && (
+            <>
+              <Button onClick={goToNext} variant="outline" size="icon" className="text-white border-white/20 hover:bg-white/10">
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+              <span className="text-white ml-4 font-semibold">
+                {formatDate(currentDate)}
+              </span>
+            </>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -278,11 +338,11 @@ export default function CalendarPage() {
 
       {/* View Tabs */}
       <Tabs value={view} onValueChange={handleViewChange} className="mb-6">
-        <TabsList className="bg-white/10">
-          <TabsTrigger value="day" className="text-white data-[state=active]:bg-white/20">
+        <TabsList className="bg-background-card">
+          <TabsTrigger value="day" className="text-white data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             {t('calendar.dayView')}
           </TabsTrigger>
-          <TabsTrigger value="week" className="text-white data-[state=active]:bg-white/20">
+          <TabsTrigger value="week" className="text-white data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             {t('calendar.weekView')}
           </TabsTrigger>
         </TabsList>
@@ -296,13 +356,29 @@ export default function CalendarPage() {
         </TabsContent>
 
         <TabsContent value="week" className="mt-6">
-          {loading ? (
-            <div className="text-white text-center py-8">{t('common.loading')}</div>
-          ) : (
-            renderWeekView()
-          )}
+          {/* New Grid View */}
+          <CalendarWeekGrid 
+            currentDate={currentDate} 
+            selectedTrainerId={selectedTrainer === 'all' ? undefined : selectedTrainer}
+          />
         </TabsContent>
       </Tabs>
+
+      {/* Cancel Registration Dialog */}
+      <CancelRegistrationDialog
+        eventId={selectedEventForCancel || ''}
+        isOpen={cancelDialogOpen}
+        onClose={() => {
+          setCancelDialogOpen(false)
+          setSelectedEventForCancel(null)
+        }}
+        onSuccess={() => {
+          setCancelDialogOpen(false)
+          setSelectedEventForCancel(null)
+          // Refresh the calendar
+          window.location.reload()
+        }}
+      />
     </div>
   )
 }

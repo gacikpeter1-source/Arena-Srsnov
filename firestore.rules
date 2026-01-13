@@ -93,6 +93,29 @@ service cloud.firestore {
       // Only trainers/admins can update settings
       allow write: if isTrainer();
     }
+    
+    // Registrations collection (multi-trainer system)
+    match /registrations/{registrationId} {
+      // Anyone can read registrations (client-side filters sensitive data)
+      allow read: if true;
+      
+      // Anyone can create registration (anonymous booking)
+      allow create: if true;
+      
+      // Allow updates for cancellations and waitlist promotions
+      allow update: if true;
+      
+      // Allow deletion for cancellations (security via email/phone verification on client)
+      allow delete: if true;
+    }
+
+    // Mail collection for email extension
+    match /mail/{emailId} {
+      // Allow anyone to create email documents
+      allow create: if true;
+      // Only extension can read/delete
+      allow read, delete: if false;
+    }
   }
 }
 

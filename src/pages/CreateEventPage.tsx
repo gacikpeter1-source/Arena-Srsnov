@@ -23,14 +23,16 @@ export default function CreateEventPage() {
   const [formData, setFormData] = useState({
     title: '',
     date: '',
-    time: '',
+    hour: '14',
+    minute: '00',
     duration: 60,
     type: 'powerskating',
     capacity: 10,
     isUnlimited: false,
     isRecurring: false,
-    recurringType: 'weekly',
-    occurrences: 4
+    recurringType: 'weekly' as 'daily' | 'weekly' | 'monthly',
+    occurrences: 4,
+    weekDays: [] as number[] // 0=Monday, 6=Sunday
   })
 
   const trainingTypes = [
@@ -54,17 +56,22 @@ export default function CreateEventPage() {
               ? (eventData.date as any).toDate() 
               : new Date(eventData.date)
             
+            const hours = eventDate.getHours().toString()
+            const minutes = eventDate.getMinutes().toString()
+            
             setFormData({
               title: eventData.title,
               date: eventDate.toISOString().split('T')[0],
-              time: eventDate.toTimeString().substring(0, 5),
-              duration: eventData.duration,
+              hour: hours,
+              minute: minutes === '0' ? '00' : minutes,
+              duration: eventData.duration || 60,
               type: eventData.type,
-              capacity: eventData.capacity || 10,
+              capacity: eventData.capacity === null ? 10 : (eventData.capacity || 10),
               isUnlimited: eventData.capacity === null,
               isRecurring: false,
-              recurringType: 'weekly',
-              occurrences: 4
+              recurringType: 'weekly' as 'daily' | 'weekly' | 'monthly',
+              occurrences: 4,
+              weekDays: []
             })
           }
         } catch (error) {
@@ -80,7 +87,7 @@ export default function CreateEventPage() {
 
     if (!userData) return
 
-    if (!formData.title || !formData.date || !formData.time) {
+    if (!formData.title || !formData.date) {
       toast({
         title: t('common.error'),
         description: 'Please fill all required fields',
@@ -91,18 +98,35 @@ export default function CreateEventPage() {
 
     setLoading(true)
     try {
-      const eventDateTime = new Date(`${formData.date}T${formData.time}`)
+      const eventDateTime = new Date(formData.date)
+      eventDateTime.setHours(parseInt(formData.hour), parseInt(formData.minute), 0, 0)
+      
+      const startTime = `${formData.hour.padStart(2, '0')}:${formData.minute.padStart(2, '0')}`
       
       const eventData = {
         title: formData.title,
         trainerId: userData.uid,
         trainerName: userData.name,
         date: Timestamp.fromDate(eventDateTime),
+        startTime: startTime,
         duration: formData.duration,
         type: formData.type,
         capacity: formData.isUnlimited ? null : formData.capacity,
         attendees: [],
         waitlist: [],
+        // Multi-trainer support
+        trainers: {
+          [userData.uid]: {
+            trainerId: userData.uid,
+            trainerName: userData.name,
+            trainerPhoto: userData.photoURL || '',
+            capacity: formData.isUnlimited ? -1 : formData.capacity,
+            currentCount: 0,
+            description: '',
+            joinedAt: new Date()
+          }
+        },
+        createdBy: userData.uid,
         updatedAt: new Date()
       }
 
@@ -212,28 +236,45 @@ export default function CreateEventPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="date" className="text-white">{t('events.date')}</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="bg-white/10 border-white/20 text-white"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="time" className="text-white">{t('events.time')}</Label>
-                <Input
-                  id="time"
-                  type="time"
-                  value={formData.time}
-                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                  className="bg-white/10 border-white/20 text-white"
-                  required
-                />
+            <div>
+              <Label htmlFor="date" className="text-white">{t('events.date')}</Label>
+              <Input
+                id="date"
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                className="bg-background-dark border-border text-white"
+                required
+              />
+            </div>
+
+            <div>
+              <Label className="text-white">{t('events.time')} (24h)</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <Select value={formData.hour} onValueChange={(value) => setFormData({ ...formData, hour: value })}>
+                  <SelectTrigger className="bg-background-dark border-border text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 24 }, (_, i) => (
+                      <SelectItem key={i} value={i.toString()}>
+                        {i.toString().padStart(2, '0')}:00
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                <Select value={formData.minute} onValueChange={(value) => setFormData({ ...formData, minute: value })}>
+                  <SelectTrigger className="bg-background-dark border-border text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="00">:00</SelectItem>
+                    <SelectItem value="15">:15</SelectItem>
+                    <SelectItem value="30">:30</SelectItem>
+                    <SelectItem value="45">:45</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -316,18 +357,47 @@ export default function CreateEventPage() {
                     <div>
                       <Label htmlFor="recurringType" className="text-white">{t('events.recurringType')}</Label>
                       <Select value={formData.recurringType} onValueChange={(value) => setFormData({ ...formData, recurringType: value })}>
-                        <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                        <SelectTrigger className="bg-background-dark border-border text-white">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="daily">{t('events.daily')}</SelectItem>
-                          <SelectItem value="weekly">{t('events.weekly')}</SelectItem>
+                          <SelectItem value="daily">Daily (every day)</SelectItem>
+                          <SelectItem value="weekly">Weekly (select days)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
+                    {formData.recurringType === 'weekly' && (
+                      <div>
+                        <Label className="text-white">Select Days</Label>
+                        <div className="grid grid-cols-7 gap-2 mt-2">
+                          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => {
+                                const newDays = formData.weekDays.includes(idx)
+                                  ? formData.weekDays.filter(d => d !== idx)
+                                  : [...formData.weekDays, idx]
+                                setFormData({ ...formData, weekDays: newDays })
+                              }}
+                              className={`p-2 rounded text-xs font-semibold transition-colors ${
+                                formData.weekDays.includes(idx)
+                                  ? 'bg-primary text-primary-foreground'
+                                  : 'bg-background-dark border border-border text-white hover:bg-primary/20'
+                              }`}
+                            >
+                              {day}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div>
-                      <Label htmlFor="occurrences" className="text-white">{t('events.occurrences')}</Label>
+                      <Label htmlFor="occurrences" className="text-white">
+                        {t('events.occurrences')} (how many times)
+                      </Label>
                       <Input
                         id="occurrences"
                         type="number"
@@ -335,7 +405,7 @@ export default function CreateEventPage() {
                         max="52"
                         value={formData.occurrences}
                         onChange={(e) => setFormData({ ...formData, occurrences: parseInt(e.target.value) })}
-                        className="bg-white/10 border-white/20 text-white"
+                        className="bg-background-dark border-border text-white"
                       />
                     </div>
                   </>

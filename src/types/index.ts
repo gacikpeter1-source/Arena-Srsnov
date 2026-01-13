@@ -10,17 +10,40 @@ export interface User {
   createdAt: Date
 }
 
+// Multi-trainer event system
+export interface TrainerSlot {
+  trainerId: string
+  trainerName: string
+  trainerPhoto?: string
+  capacity: number // -1 = unlimited
+  currentCount: number
+  description?: string
+  joinedAt: Date
+}
+
 export interface Event {
   id: string
   title: string
-  trainerId: string
-  trainerName: string
-  date: Date
-  duration: number // minutes
   type: string
-  capacity: number | null // null = unlimited
-  attendees: Attendee[]
-  waitlist: Attendee[]
+  date: Date
+  startTime: string // "14:00" format
+  duration: number // minutes
+  
+  // Multi-trainer support
+  trainers: { [trainerId: string]: TrainerSlot }
+  
+  // Legacy support (for migration)
+  trainerId?: string
+  trainerName?: string
+  capacity?: number | null
+  attendees?: Attendee[]
+  waitlist?: Attendee[]
+  
+  // Recurring events
+  recurringSeriesId?: string
+  recurrencePattern?: 'daily' | 'weekly' | 'monthly' | null
+  
+  createdBy: string
   createdAt: Date
   updatedAt: Date
 }
@@ -46,6 +69,27 @@ export interface InviteCode {
 export interface AppSettings {
   backgroundImageUrl?: string
   trainingTypes: string[]
+}
+
+export interface Registration {
+  id: string
+  eventId: string
+  trainerId: string
+  userId: string // generated unique ID
+  
+  // User data
+  name: string
+  email: string
+  phone: string
+  
+  // Generated data
+  uniqueCode: string // 6-digit format "203-776"
+  qrCodeData: string // encoded QR data
+  
+  // Status
+  status: 'confirmed' | 'waitlist' | 'cancelled'
+  position?: number // waitlist position
+  registeredAt: Date
 }
 
 export interface Booking {

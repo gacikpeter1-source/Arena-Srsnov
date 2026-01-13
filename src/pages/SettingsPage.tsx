@@ -84,6 +84,36 @@ export default function SettingsPage() {
     }
   }
 
+  const handleDeleteBackground = async () => {
+    if (!confirm('Are you sure you want to remove the background image?')) return
+
+    setUploading(true)
+    try {
+      // Remove background from settings
+      await setDoc(doc(db, 'settings', 'app'), {
+        backgroundImageUrl: null,
+        updatedAt: new Date()
+      }, { merge: true })
+
+      toast({
+        title: t('common.success'),
+        description: 'Background removed successfully. Refresh to see changes.'
+      })
+
+      // Refresh page to show changes
+      setTimeout(() => window.location.reload(), 1000)
+    } catch (error: any) {
+      console.error('Error removing background:', error)
+      toast({
+        title: t('common.error'),
+        description: error.message || 'Failed to remove background',
+        variant: 'destructive'
+      })
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleGenerateInviteCode = async () => {
     if (!userData || !isAdmin) return
 
@@ -228,6 +258,16 @@ export default function SettingsPage() {
                     {uploading ? t('common.loading') : t('settings.changeBackground')}
                   </Button>
                 </div>
+              </div>
+              <div>
+                <Button 
+                  onClick={handleDeleteBackground} 
+                  variant="destructive" 
+                  disabled={uploading}
+                  className="w-full sm:w-auto"
+                >
+                  Remove Background
+                </Button>
               </div>
             </div>
           </CardContent>

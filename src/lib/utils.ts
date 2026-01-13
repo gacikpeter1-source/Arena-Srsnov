@@ -14,19 +14,44 @@ export function generateInviteCode(): string {
   return code
 }
 
-export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat('sk-SK', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  }).format(date)
+export function formatDate(date: Date | string | any): string {
+  // Handle string dates (YYYY-MM-DD)
+  if (typeof date === 'string') {
+    return date
+  }
+  
+  // Handle Firestore Timestamps
+  if (date && typeof date === 'object' && 'toDate' in date) {
+    date = date.toDate()
+  }
+  
+  // Handle Date objects
+  if (date instanceof Date) {
+    return new Intl.DateTimeFormat('sk-SK', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(date)
+  }
+  
+  return 'N/A'
 }
 
-export function formatTime(date: Date): string {
-  return new Intl.DateTimeFormat('sk-SK', {
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(date)
+export function formatTime(date: Date | any): string {
+  // Handle Firestore Timestamps
+  if (date && typeof date === 'object' && 'toDate' in date) {
+    date = date.toDate()
+  }
+  
+  // Handle Date objects
+  if (date instanceof Date) {
+    return new Intl.DateTimeFormat('sk-SK', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date)
+  }
+  
+  return 'N/A'
 }
 
 export function formatDateTime(date: Date): string {
