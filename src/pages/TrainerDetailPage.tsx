@@ -137,7 +137,7 @@ export default function TrainerDetailPage() {
           <div className="grid gap-4">
             {events.map(event => {
               const confirmedCount = event.attendees?.length || 0
-              const isFull = event.capacity !== null && confirmedCount >= event.capacity
+              const isFull = event.capacity !== null && event.capacity !== undefined && confirmedCount >= event.capacity
               
               return (
                 <Link key={event.id} to={`/events/${event.id}`}>

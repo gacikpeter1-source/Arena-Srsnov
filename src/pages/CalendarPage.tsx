@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ChevronLeft, ChevronRight, Calendar, Clock, Users, Plus, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar, Clock, Users, Plus } from 'lucide-react'
 import { formatDate, formatTime, addDays, getWeekStart, getWeekDays, isSameDay } from '@/lib/utils'
 import CalendarWeekGrid from '@/components/CalendarWeekGrid'
 import CancelRegistrationDialog from '@/components/CancelRegistrationDialog'
@@ -39,17 +39,8 @@ export default function CalendarPage() {
     }
   }, [searchParams])
 
-  // Refetch events when page becomes visible (e.g., after navigating back)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchEvents()
-      }
-    }
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
-  }, [currentDate, selectedTrainer, view])
+  // Event fetching is now handled by CalendarWeekGrid component for week view
+  // Day view events are fetched in the useEffect below
 
   useEffect(() => {
     const fetchTrainers = async () => {
@@ -237,45 +228,6 @@ export default function CalendarPage() {
             )
           })
         )}
-      </div>
-    )
-  }
-
-  const renderWeekView = () => {
-    const weekStart = getWeekStart(currentDate)
-    const weekDays = getWeekDays(weekStart)
-    const dayNames = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne']
-
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
-        {weekDays.map((day, index) => {
-          const dayEvents = events.filter(event => isSameDay(event.date, day))
-          const isToday = isSameDay(day, new Date())
-
-          return (
-            <div key={index} className="min-h-[200px]">
-              <div className={`text-center mb-2 p-2 rounded ${isToday ? 'bg-white/20' : 'bg-white/10'}`}>
-                <div className="text-white/70 text-xs">{dayNames[index]}</div>
-                <div className="text-white font-semibold">{day.getDate()}</div>
-              </div>
-              <div className="space-y-2">
-                {dayEvents.map(event => (
-                  <Link key={event.id} to={`/events/${event.id}`}>
-                    <Card className={`${getEventColor(event)} hover:opacity-80 border transition-colors cursor-pointer p-2`}>
-                      <div className="text-white text-xs">
-                        <div className="font-semibold truncate">{event.title}</div>
-                        <div className="text-white/70">{formatTime(event.date)}</div>
-                        <div className="text-white/70">
-                          {Object.keys(event.trainers || {}).length}T
-                        </div>
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )
-        })}
       </div>
     )
   }

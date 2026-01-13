@@ -356,7 +356,7 @@ export default function CreateEventPage() {
                   <>
                     <div>
                       <Label htmlFor="recurringType" className="text-white">{t('events.recurringType')}</Label>
-                      <Select value={formData.recurringType} onValueChange={(value) => setFormData({ ...formData, recurringType: value })}>
+                      <Select value={formData.recurringType} onValueChange={(value) => setFormData({ ...formData, recurringType: value as 'daily' | 'weekly' | 'monthly' })}>
                         <SelectTrigger className="bg-background-dark border-border text-white">
                           <SelectValue />
                         </SelectTrigger>

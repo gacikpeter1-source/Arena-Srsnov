@@ -7,13 +7,10 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Event, Registration, User } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar, Clock, Users, MapPin, User as UserIcon, QrCode, Trash2, UserMinus, UserPlus } from 'lucide-react'
-import { formatDateTime } from '@/lib/utils'
+import { Calendar, Clock, Users, MapPin, User as UserIcon, QrCode, Trash2, UserMinus } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { cancelRegistration } from '@/lib/waitlistUtils'
 import CancelRegistrationDialog from '@/components/CancelRegistrationDialog'
 import RegistrationForm from '@/components/RegistrationForm'
@@ -339,7 +336,7 @@ export default function EventDetailPage() {
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
               <span>
-                {event.date} {event.startTime}
+                {typeof event.date === 'string' ? event.date : event.date.toLocaleDateString('sk-SK')} {event.startTime}
               </span>
             </div>
             <div className="flex items-center gap-2">

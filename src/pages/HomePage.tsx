@@ -47,7 +47,7 @@ export default function HomePage() {
 
   const getEventStatus = (event: Event) => {
     const confirmedCount = event.attendees?.length || 0
-    const isFull = event.capacity !== null && confirmedCount >= event.capacity
+    const isFull = event.capacity !== null && event.capacity !== undefined && confirmedCount >= event.capacity
     
     if (isFull) {
       return { text: t('home.full'), color: 'text-red-400' }
@@ -114,7 +114,7 @@ export default function HomePage() {
             {upcomingEvents.map(event => {
               const status = getEventStatus(event)
               const confirmedCount = event.attendees?.length || 0
-              const isFull = event.capacity !== null && confirmedCount >= event.capacity
+              const isFull = event.capacity !== null && event.capacity !== undefined && confirmedCount >= event.capacity
               
               return (
                 <Link key={event.id} to={`/events/${event.id}`}>

@@ -42,6 +42,7 @@ export interface Event {
   // Recurring events
   recurringSeriesId?: string
   recurrencePattern?: 'daily' | 'weekly' | 'monthly' | null
+  recurringDays?: number[] // For weekly: 0=Sun, 1=Mon, etc.
   
   createdBy: string
   createdAt: Date
