@@ -14,6 +14,7 @@ import SettingsPage from './pages/SettingsPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import CancelRegistrationPage from './pages/CancelRegistrationPage'
+import ImportSchedulePage from './pages/ImportSchedulePage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -69,6 +70,14 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminDashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/import-schedule" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <ImportSchedulePage />
                 </ProtectedRoute>
               } 
             />

@@ -265,6 +265,9 @@ export default function CalendarWeekGrid({ currentDate, selectedTrainerId }: Cal
                           const eventDate = typeof event.date === 'string' ? new Date(event.date) : event.date
                           const isPast = eventDate < new Date()
                           
+                          // Check if organizational event
+                          const isOrganizational = event.isOrganizational === true
+                          
                           // Calculate total capacity and current count
                           let totalCapacity = 0
                           let totalCurrent = 0
@@ -284,12 +287,19 @@ export default function CalendarWeekGrid({ currentDate, selectedTrainerId }: Cal
                           // Check if all spots are full (ignoring unlimited trainers)
                           const isFull = !hasUnlimited && totalCapacity > 0 && totalCurrent >= totalCapacity
                           
-                          // Determine color class
-                          const colorClass = isPast 
-                            ? 'bg-gray-500/20 border-gray-500' 
-                            : isFull 
-                              ? 'bg-red-500/20 border-red-500' 
-                              : 'bg-green-500/20 border-green-500'
+                          // Determine color class - BLUE for organizational events
+                          let colorClass = ''
+                          if (isOrganizational) {
+                            colorClass = isPast 
+                              ? 'bg-blue-500/10 border-l-4 border-l-blue-400/50 border-r border-r-blue-400/30 border-y-0' 
+                              : 'bg-blue-500/15 border-l-4 border-l-blue-400 border-r border-r-dashed border-r-blue-400/50 border-y-0'
+                          } else {
+                            colorClass = isPast 
+                              ? 'bg-gray-500/20 border-gray-500' 
+                              : isFull 
+                                ? 'bg-red-500/20 border-red-500' 
+                                : 'bg-green-500/20 border-green-500'
+                          }
                           
                           // Format capacity display
                           const capacityDisplay = hasUnlimited 
@@ -301,19 +311,23 @@ export default function CalendarWeekGrid({ currentDate, selectedTrainerId }: Cal
                               key={event.id}
                               onClick={() => !isPast && handleEventClick(event)}
                               className={`
-                                ${colorClass} border-2 p-2 rounded-md cursor-pointer transition-all text-center
+                                ${colorClass} ${isOrganizational ? '' : 'border-2'} p-2 rounded-md cursor-pointer transition-all text-center relative
                                 ${isPast ? 'opacity-60' : 'hover:scale-[1.02] hover:shadow-lg'}
+                                ${isOrganizational && !isPast ? 'hover:bg-blue-500/25' : ''}
                               `}
                             >
-                              <div className="text-primary font-mono text-xs font-bold">
+                              {isOrganizational && !isPast && (
+                                <div className="absolute top-0.5 right-1 text-[8px]">🔵</div>
+                              )}
+                              <div className={`font-mono text-xs font-bold ${isOrganizational ? 'text-blue-400' : 'text-primary'}`}>
                                 {event.startTime || 
                                   `${eventDate.getHours().toString().padStart(2, '0')}:${eventDate.getMinutes().toString().padStart(2, '0')}`
                                 }
                               </div>
-                              <div className="text-white font-semibold text-xs leading-tight truncate">
+                              <div className={`font-semibold text-xs leading-tight truncate ${isOrganizational ? 'text-blue-300' : 'text-white'}`}>
                                 {event.title}
                               </div>
-                              <div className="text-text-muted text-[10px]">
+                              <div className={`text-[10px] ${isOrganizational ? 'text-blue-400/70' : 'text-text-muted'}`}>
                                 {capacityDisplay}
                               </div>
                             </div>

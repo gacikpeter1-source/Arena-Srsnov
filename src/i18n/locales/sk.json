@@ -13,7 +13,8 @@
     "profile": "Profil",
     "admin": "Administrácia",
     "back": "Späť",
-    "language": "Jazyk"
+    "language": "Jazyk",
+    "importSchedule": "Importovať Rozvrh"
   },
   "home": {
     "upcomingTrainings": "Nadchádzajúce tréningy",
@@ -106,7 +107,12 @@
     "promoted": "Gratulujeme! Uvoľnilo sa miesto na tréningu.",
     "leaveWaitlist": "Opustiť čakaciu listinu",
     "register": "Registrovať",
-    "cancelMyRegistration": "Zrušiť moju registráciu"
+    "cancelMyRegistration": "Zrušiť moju registráciu",
+    "selectTrainer": "Vyberte si trénera",
+    "availableTrainers": "Dostupní tréneri",
+    "noDescription": "Bez popisu",
+    "continueWithTrainer": "Pokračovať s vybraným trénerom",
+    "bookNow": "Rezervovať teraz"
   },
   "auth": {
     "login": "Prihlásenie",
@@ -208,6 +214,47 @@
     "invalidToken": "Neplatný alebo vypršaný token na zrušenie",
     "tokenExpired": "Tento odkaz na zrušenie vypršal. Ak potrebujete zrušiť registráciu, kontaktujte podporu.",
     "alreadyCancelled": "Táto registrácia už bola zrušená"
+  },
+  "import": {
+    "title": "Importovať organizačný rozvrh",
+    "subtitle": "Nahrajte Excel súbor (.xlsx, .xls, .csv) s organizačnými udalosťami",
+    "chooseFile": "Vyberte Excel súbor",
+    "fileFormats": "Podporované formáty: .xlsx, .xls, .csv",
+    "selectFile": "Vybrať súbor",
+    "expectedFormat": "Očakávaný formát",
+    "preview": "Náhľad",
+    "validEvents": "platných udalostí",
+    "date": "Dátum",
+    "time": "Čas",
+    "title": "Názov",
+    "status": "Stav",
+    "valid": "Platný",
+    "importEvents": "Importovať",
+    "events": "Udalostí"
+  },
+  "trainer": {
+    "organizationalEvent": "Organizačná udalosť",
+    "alreadyConfirmed": "Už potvrdené",
+    "alreadyConfirmedMessage": "Už ste potvrdili svoju dostupnosť pre túto udalosť.",
+    "description": "Popis",
+    "participants": "Aktuálni účastníci",
+    "trainersAlreadyConfirmed": "Tréneri už potvrdili",
+    "confirmYourAvailability": "✅ Potvrdiť vašu dostupnosť?",
+    "yourCapacityLimit": "Vaša kapacita",
+    "yourDescription": "Váš popis",
+    "descriptionPlaceholder": "napr. \"Skupina začiatočníkov - zameranie na techniku\" alebo \"Vítaní pokročilí hráči\"",
+    "descriptionHelp": "Toto sa zobrazí používateľom pri výbere trénera",
+    "notAvailable": "Nie som dostupný",
+    "confirmAndJoin": "Potvrdiť & Pripojiť sa",
+    "youHaveConfirmed": "Potvrdili ste svoju dostupnosť pre túto udalosť",
+    "othersConfirmed": "tréner(i) už potvrdili",
+    "noConfirmationsYet": "Žiadni tréneri ešte nepotvrdili. Buďte prvý!",
+    "viewYourConfirmation": "Zobraziť potvrdenie",
+    "confirmAvailability": "Potvrdiť dostupnosť",
+    "noTrainersAvailableYet": "Žiadni tréneri ešte nepotvrdili svoju dostupnosť. Skúste to neskôr.",
+    "yourParticipants": "Vaši účastníci",
+    "capacityInfo": "Vaša kapacita",
+    "exportList": "Exportovať zoznam"
   },
   "common": {
     "loading": "Načítavam...",

@@ -55,12 +55,18 @@ service cloud.firestore {
       // Anyone can read events
       allow read: if true;
       
-      // Only trainers can create events
+      // Trainers can create regular events
       allow create: if isTrainer() && request.resource.data.trainerId == request.auth.uid;
+      
+      // Admins can create organizational events
+      allow create: if isAdmin() && request.resource.data.isOrganizational == true;
       
       // Trainers can update their own events
       allow update: if isTrainer() && 
         (resource.data.trainerId == request.auth.uid || isAdmin());
+      
+      // Trainers can update organizational events to add themselves
+      allow update: if isTrainer() && resource.data.isOrganizational == true;
       
       // Trainers can delete their own events
       allow delete: if isTrainer() && 

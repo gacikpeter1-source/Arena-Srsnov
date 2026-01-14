@@ -13,7 +13,8 @@
     "profile": "Profile",
     "admin": "Admin",
     "back": "Back",
-    "language": "Language"
+    "language": "Language",
+    "importSchedule": "Import Schedule"
   },
   "home": {
     "upcomingTrainings": "Upcoming Trainings",
@@ -106,7 +107,12 @@
     "promoted": "Congratulations! A spot opened up for this training.",
     "leaveWaitlist": "Leave Waitlist",
     "register": "Register",
-    "cancelMyRegistration": "Cancel My Registration"
+    "cancelMyRegistration": "Cancel My Registration",
+    "selectTrainer": "Select Your Trainer",
+    "availableTrainers": "Available Trainers",
+    "noDescription": "No description provided",
+    "continueWithTrainer": "Continue with Selected Trainer",
+    "bookNow": "Book Now"
   },
   "auth": {
     "login": "Sign In",
@@ -208,6 +214,47 @@
     "invalidToken": "Invalid or expired cancellation token",
     "tokenExpired": "This cancellation link has expired. Please contact support if you need to cancel.",
     "alreadyCancelled": "This registration has already been cancelled"
+  },
+  "import": {
+    "title": "Import Organizational Schedule",
+    "subtitle": "Upload an Excel file (.xlsx, .xls, .csv) with organizational events",
+    "chooseFile": "Choose Excel File",
+    "fileFormats": "Supports .xlsx, .xls, .csv",
+    "selectFile": "Select File",
+    "expectedFormat": "Expected Format",
+    "preview": "Preview",
+    "validEvents": "valid events",
+    "date": "Date",
+    "time": "Time",
+    "title": "Title",
+    "status": "Status",
+    "valid": "Valid",
+    "importEvents": "Import",
+    "events": "Events"
+  },
+  "trainer": {
+    "organizationalEvent": "Organizational Event",
+    "alreadyConfirmed": "Already Confirmed",
+    "alreadyConfirmedMessage": "You have already confirmed your availability for this event.",
+    "description": "Description",
+    "participants": "Current Participants",
+    "trainersAlreadyConfirmed": "Trainers Already Confirmed",
+    "confirmYourAvailability": "✅ Confirm Your Availability?",
+    "yourCapacityLimit": "Your Capacity Limit",
+    "yourDescription": "Your Description",
+    "descriptionPlaceholder": "e.g., \"Beginner group - technique focus\" or \"Advanced players welcome\"",
+    "descriptionHelp": "This will be shown to users when they select a trainer",
+    "notAvailable": "Not Available",
+    "confirmAndJoin": "Confirm & Join Event",
+    "youHaveConfirmed": "You have confirmed your availability for this event",
+    "othersConfirmed": "trainer(s) already confirmed",
+    "noConfirmationsYet": "No trainers have confirmed yet. Be the first!",
+    "viewYourConfirmation": "View Confirmation",
+    "confirmAvailability": "Confirm Availability",
+    "noTrainersAvailableYet": "No trainers have confirmed their availability yet. Please check back later.",
+    "yourParticipants": "Your Participants",
+    "capacityInfo": "Your Capacity",
+    "exportList": "Export List"
   },
   "common": {
     "loading": "Loading...",

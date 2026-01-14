@@ -32,7 +32,8 @@ export default function CreateEventPage() {
     isRecurring: false,
     recurringType: 'weekly' as 'daily' | 'weekly' | 'monthly',
     occurrences: 4,
-    weekDays: [] as number[] // 0=Monday, 6=Sunday
+    weekDays: [] as number[], // 0=Monday, 6=Sunday
+    isOrganizational: false // NEW: Mark as organizational event
   })
 
   const trainingTypes = [
@@ -71,7 +72,8 @@ export default function CreateEventPage() {
               isRecurring: false,
               recurringType: 'weekly' as 'daily' | 'weekly' | 'monthly',
               occurrences: 4,
-              weekDays: []
+              weekDays: [],
+              isOrganizational: eventData.isOrganizational || false
             })
           }
         } catch (error) {
@@ -103,19 +105,32 @@ export default function CreateEventPage() {
       
       const startTime = `${formData.hour.padStart(2, '0')}:${formData.minute.padStart(2, '0')}`
       
-      const eventData = {
+      // Base event data
+      const eventData: any = {
         title: formData.title,
-        trainerId: userData.uid,
-        trainerName: userData.name,
         date: Timestamp.fromDate(eventDateTime),
         startTime: startTime,
         duration: formData.duration,
         type: formData.type,
-        capacity: formData.isUnlimited ? null : formData.capacity,
-        attendees: [],
-        waitlist: [],
-        // Multi-trainer support
-        trainers: {
+        createdBy: userData.uid,
+        updatedAt: new Date()
+      }
+
+      // If organizational event
+      if (formData.isOrganizational) {
+        eventData.isOrganizational = true
+        eventData.importedBy = userData.uid
+        eventData.importedAt = new Date()
+        eventData.status = 'pending' // Will become 'active' when first trainer confirms
+        eventData.trainers = {} // Empty - trainers will confirm later
+      } else {
+        // Regular trainer-created event
+        eventData.trainerId = userData.uid
+        eventData.trainerName = userData.name
+        eventData.capacity = formData.isUnlimited ? null : formData.capacity
+        eventData.attendees = []
+        eventData.waitlist = []
+        eventData.trainers = {
           [userData.uid]: {
             trainerId: userData.uid,
             trainerName: userData.name,
@@ -125,9 +140,7 @@ export default function CreateEventPage() {
             description: '',
             joinedAt: new Date()
           }
-        },
-        createdBy: userData.uid,
-        updatedAt: new Date()
+        }
       }
 
       if (eventId) {
@@ -308,34 +321,60 @@ export default function CreateEventPage() {
               </Select>
             </div>
 
-            <div>
-              <Label className="text-white">{t('events.capacity')}</Label>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
+            {/* Organizational Event Toggle */}
+            {userData?.role === 'admin' && !eventId && (
+              <div className="bg-blue-500/10 border border-blue-400/30 p-4 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
                   <input
                     type="checkbox"
-                    id="unlimited"
-                    checked={formData.isUnlimited}
-                    onChange={(e) => setFormData({ ...formData, isUnlimited: e.target.checked })}
+                    id="organizational"
+                    checked={formData.isOrganizational}
+                    onChange={(e) => setFormData({ ...formData, isOrganizational: e.target.checked })}
                     className="w-4 h-4"
                   />
-                  <Label htmlFor="unlimited" className="text-white cursor-pointer">
-                    {t('events.unlimited')}
+                  <Label htmlFor="organizational" className="text-blue-300 cursor-pointer font-semibold">
+                    🔵 Organizational Event
                   </Label>
                 </div>
-                {!formData.isUnlimited && (
-                  <Input
-                    type="number"
-                    min="1"
-                    value={formData.capacity}
-                    onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
-                    className="bg-white/10 border-white/20 text-white"
-                  />
+                {formData.isOrganizational && (
+                  <p className="text-blue-200/70 text-xs mt-1">
+                    This event will appear in light blue. Trainers can confirm their availability, and users will select a trainer when booking.
+                  </p>
                 )}
               </div>
-            </div>
+            )}
 
-            {!eventId && (
+            {/* Capacity - hide for organizational events */}
+            {!formData.isOrganizational && (
+              <div>
+                <Label className="text-white">{t('events.capacity')}</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="unlimited"
+                      checked={formData.isUnlimited}
+                      onChange={(e) => setFormData({ ...formData, isUnlimited: e.target.checked })}
+                      className="w-4 h-4"
+                    />
+                    <Label htmlFor="unlimited" className="text-white cursor-pointer">
+                      {t('events.unlimited')}
+                    </Label>
+                  </div>
+                  {!formData.isUnlimited && (
+                    <Input
+                      type="number"
+                      min="1"
+                      value={formData.capacity}
+                      onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!eventId && !formData.isOrganizational && (
               <>
                 <div>
                   <div className="flex items-center gap-2 mb-2">

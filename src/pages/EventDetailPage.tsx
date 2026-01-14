@@ -14,6 +14,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { cancelRegistration } from '@/lib/waitlistUtils'
 import CancelRegistrationDialog from '@/components/CancelRegistrationDialog'
 import RegistrationForm from '@/components/RegistrationForm'
+import TrainerConfirmationModal from '@/components/TrainerConfirmationModal'
+import TrainerSelectionModal from '@/components/TrainerSelectionModal'
 
 export default function EventDetailPage() {
   const { t } = useTranslation()
@@ -32,6 +34,8 @@ export default function EventDetailPage() {
   const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null)
   const [registerModalOpen, setRegisterModalOpen] = useState(false)
   const [selectedTrainerForRegistration, setSelectedTrainerForRegistration] = useState<{ id: string; slot: any } | null>(null)
+  const [trainerConfirmModalOpen, setTrainerConfirmModalOpen] = useState(false)
+  const [trainerSelectionModalOpen, setTrainerSelectionModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchEventAndRegistrations = async () => {
@@ -76,7 +80,12 @@ export default function EventDetailPage() {
             recurringSeriesId: eventData.recurringSeriesId,
             recurrencePattern: eventData.recurrencePattern,
             recurringDays: eventData.recurringDays,
-            trainers: trainersObj
+            trainers: trainersObj,
+            // Organizational event flags
+            isOrganizational: eventData.isOrganizational || false,
+            importedBy: eventData.importedBy,
+            importedAt: eventData.importedAt,
+            status: eventData.status
           }
           setEvent(parsedEvent)
 
@@ -282,6 +291,19 @@ export default function EventDetailPage() {
     window.location.reload()
   }
 
+  const handleTrainerConfirmed = () => {
+    // Refresh the page to show updated event with trainer confirmation
+    window.location.reload()
+  }
+
+  const handleTrainerSelected = (trainerId: string, trainerSlot: any) => {
+    // Close trainer selection modal
+    setTrainerSelectionModalOpen(false)
+    // Open registration form with selected trainer
+    setSelectedTrainerForRegistration({ id: trainerId, slot: trainerSlot })
+    setRegisterModalOpen(true)
+  }
+
   if (loading) {
     return (
       <div className="content-container py-8">
@@ -312,12 +334,87 @@ export default function EventDetailPage() {
   const isEventTrainer = user && event.trainers && Object.keys(event.trainers).includes(user.uid)
   const canDeleteEvent = (isEventTrainer || user?.role === 'admin') && isTrainer
 
+  // Check if this is an organizational event
+  const isOrganizationalEvent = event.isOrganizational === true
+  const hasConfirmedTrainers = event.trainers && Object.keys(event.trainers).length > 0
+  const userHasConfirmed = user && event.trainers && event.trainers[user.uid]
+
   return (
     <div className="content-container py-8">
+      {/* Organizational Event Banner - For Trainers */}
+      {isOrganizationalEvent && isTrainer && !isPast && (
+        <Card className="bg-blue-500/10 border-2 border-blue-400/30 mb-4">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="h-3 w-3 rounded-full bg-blue-400"></div>
+                  <h3 className="text-blue-300 font-semibold text-lg">
+                    {t('trainer.organizationalEvent') || 'Organizational Event'}
+                  </h3>
+                </div>
+                <p className="text-blue-200/70 text-sm">
+                  {userHasConfirmed 
+                    ? (t('trainer.youHaveConfirmed') || 'You have confirmed your availability for this event')
+                    : hasConfirmedTrainers
+                      ? (t('trainer.othersConfirmed') || `${Object.keys(event.trainers).length} trainer(s) already confirmed`)
+                      : (t('trainer.noConfirmationsYet') || 'No trainers have confirmed yet. Be the first!')
+                  }
+                </p>
+              </div>
+              <Button
+                onClick={() => setTrainerConfirmModalOpen(true)}
+                className={userHasConfirmed ? "bg-green-600 hover:bg-green-700" : "bg-blue-500 hover:bg-blue-600"}
+              >
+                {userHasConfirmed 
+                  ? (t('trainer.viewYourConfirmation') || 'View Confirmation')
+                  : (t('trainer.confirmAvailability') || 'Confirm Availability')
+                }
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Organizational Event Info - For Public Users */}
+      {isOrganizationalEvent && !isTrainer && (
+        <Card className="bg-blue-500/10 border-2 border-blue-400/30 mb-4">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="h-3 w-3 rounded-full bg-blue-400"></div>
+                  <h3 className="text-blue-300 font-semibold">
+                    {t('trainer.organizationalEvent') || 'Organizational Event'}
+                  </h3>
+                </div>
+                <p className="text-blue-200/70 text-sm">
+                  {hasConfirmedTrainers 
+                    ? `${Object.keys(event.trainers).length} ${Object.keys(event.trainers).length === 1 ? 'trainer' : 'trainers'} available`
+                    : (t('trainer.noTrainersAvailableYet') || 'No trainers have confirmed their availability yet. Please check back later.')
+                  }
+                </p>
+              </div>
+              {hasConfirmedTrainers && !isPast && (
+                <Button
+                  onClick={() => setTrainerSelectionModalOpen(true)}
+                  className="bg-blue-500 hover:bg-blue-600"
+                >
+                  {t('booking.bookNow') || 'Book Now'}
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Event Details Card */}
       <Card className="bg-white/10 border-white/20 mb-6">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-white text-3xl">{event.title}</CardTitle>
+          <div className="flex items-center gap-3">
+            {isOrganizationalEvent && <div className="h-2 w-2 rounded-full bg-blue-400"></div>}
+            <CardTitle className="text-white text-3xl">{event.title}</CardTitle>
+          </div>
           
           {/* Trainer/Admin: Delete Event Button */}
           {canDeleteEvent && (
@@ -360,12 +457,171 @@ export default function EventDetailPage() {
       {/* Trainers and Participants */}
       <Card className="bg-white/10 border-white/20 mb-6">
         <CardHeader>
-          <CardTitle className="text-white">{t('events.trainersAndParticipants')}</CardTitle>
+          <CardTitle className="text-white">
+            {isOrganizationalEvent && isEventTrainer 
+              ? t('trainer.yourParticipants') || 'Your Participants'
+              : t('events.trainersAndParticipants')
+            }
+          </CardTitle>
+          {isOrganizationalEvent && isEventTrainer && user && event.trainers[user.uid] && (
+            <p className="text-text-secondary text-sm mt-2">
+              {t('trainer.capacityInfo') || 'Your Capacity'}: {' '}
+              {event.trainers[user.uid].capacity === -1 
+                ? `${getConfirmedCount(user.uid)}/∞ (${t('events.unlimited')})`
+                : `${getConfirmedCount(user.uid)}/${event.trainers[user.uid].capacity}`
+              }
+            </p>
+          )}
         </CardHeader>
         <CardContent>
           {Object.entries(event.trainers || {}).length === 0 ? (
             <p className="text-white/70 text-center py-4">{t('events.noTrainersAssigned')}</p>
+          ) : isOrganizationalEvent && isEventTrainer && user ? (
+            // For organizational events, trainers see only their own participants
+            <div>
+              {(() => {
+                const trainerId = user.uid
+                const trainerSlot = event.trainers[trainerId]
+                if (!trainerSlot) return null
+
+                const trainer = trainers[trainerId]
+                const confirmedRegs = getRegistrationsByTrainer(trainerId).filter(r => r.status === 'confirmed')
+                const waitlistRegs = getWaitlistRegistrations(trainerId)
+                const capacity = trainerSlot.capacity
+                const confirmedCount = confirmedRegs.length
+                const isFull = capacity !== -1 && confirmedCount >= capacity
+
+                return (
+                  <>
+                    {/* Trainer Info */}
+                    <div className="flex items-center gap-4 p-4 bg-blue-500/10 rounded-lg mb-4 border border-blue-400/30">
+                      {trainer?.photoURL && (
+                        <img
+                          src={trainer.photoURL}
+                          alt={trainer.name}
+                          className="w-16 h-16 rounded-full object-cover"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <div className="text-white font-semibold text-lg">{trainer?.name || t('events.trainer')}</div>
+                        {trainerSlot.description && (
+                          <p className="text-text-muted text-sm mt-1">{trainerSlot.description}</p>
+                        )}
+                        <div className="flex items-center gap-4 mt-2">
+                          <div className={`text-sm ${isFull ? 'text-status-danger' : 'text-status-success'}`}>
+                            {capacity === -1 
+                              ? `${confirmedCount} ${t('events.registeredUnlimited')}`
+                              : `${confirmedCount}/${capacity} ${t('events.spots')}`
+                            }
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const csvContent = [
+                            ['Name', 'Email', 'Phone', 'Code', 'Status', 'Registered At'].join(','),
+                            ...confirmedRegs.map(reg => 
+                              [reg.name, reg.email, reg.phone, reg.uniqueCode, reg.status, new Date(reg.registeredAt).toLocaleString()].join(',')
+                            )
+                          ].join('\n')
+                          const blob = new Blob([csvContent], { type: 'text/csv' })
+                          const url = window.URL.createObjectURL(blob)
+                          const a = document.createElement('a')
+                          a.href = url
+                          a.download = `participants_${event.title}_${trainerId}.csv`
+                          a.click()
+                        }}
+                        className="border-blue-400/30 text-blue-400 hover:bg-blue-400/10"
+                      >
+                        {t('trainer.exportList') || 'Export List'}
+                      </Button>
+                    </div>
+
+                    {/* Confirmed Participants */}
+                    <div className="mb-4">
+                      <h4 className="text-white font-semibold mb-2">{t('events.confirmedParticipants')}</h4>
+                      {confirmedRegs.length > 0 ? (
+                        <div className="space-y-2">
+                          {confirmedRegs.map((reg) => (
+                            <div key={reg.id} className="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                              <UserIcon className="h-5 w-5 text-white/70" />
+                              <div className="flex-1 text-white">
+                                <div className="font-semibold">{reg.name}</div>
+                                <div className="text-sm text-white/70">{reg.email}</div>
+                                <div className="text-sm text-white/70">{reg.phone}</div>
+                                <div className="text-xs text-primary font-mono mt-1">ID: {reg.uniqueCode}</div>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => window.open(`/qr/${reg.id}`, '_blank')}
+                                  className="text-primary hover:text-primary-gold"
+                                  title="View QR Code"
+                                >
+                                  <QrCode className="h-5 w-5" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedRegistration(reg)
+                                    setRemoveDialogOpen(true)
+                                  }}
+                                  className="text-status-danger hover:text-status-danger/80"
+                                  title="Remove User"
+                                >
+                                  <UserMinus className="h-5 w-5" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-white/70 text-center py-4 text-sm">{t('events.noParticipantsYet')}</p>
+                      )}
+                    </div>
+
+                    {/* Waitlist */}
+                    {waitlistRegs.length > 0 && (
+                      <div>
+                        <h4 className="text-white font-semibold mb-2">{t('events.waitlist')}</h4>
+                        <div className="space-y-2">
+                          {waitlistRegs.map((reg) => (
+                            <div key={reg.id} className="flex items-center gap-3 p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+                              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 text-xs font-bold">
+                                {reg.position}
+                              </div>
+                              <div className="flex-1 text-white">
+                                <div className="font-semibold">{reg.name}</div>
+                                <div className="text-sm text-white/70">{reg.email}</div>
+                                <div className="text-sm text-white/70">{reg.phone}</div>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedRegistration(reg)
+                                  setRemoveDialogOpen(true)
+                                }}
+                                className="text-status-danger hover:text-status-danger/80"
+                                title="Remove from Waitlist"
+                              >
+                                <UserMinus className="h-5 w-5" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )
+              })()}
+            </div>
           ) : (
+            // For regular events or public view, show tabs for all trainers
             <Tabs defaultValue={Object.keys(event.trainers || {})[0]} className="w-full">
               <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${Object.keys(event.trainers || {}).length}, minmax(0, 1fr))` }}>
                 {Object.entries(event.trainers || {}).map(([trainerId, trainerSlot]) => {
@@ -418,7 +674,7 @@ export default function EventDetailPage() {
                           </div>
                         </div>
                       </div>
-                      {!isPast && (
+                      {!isPast && !isOrganizationalEvent && (
                         <Button
                           onClick={() => {
                             setSelectedTrainerForRegistration({ id: trainerId, slot: trainerSlot })
@@ -642,6 +898,28 @@ export default function EventDetailPage() {
             // Refresh the page
             window.location.reload()
           }}
+        />
+      )}
+
+      {/* Trainer Confirmation Modal (for organizational events) */}
+      {isOrganizationalEvent && user && (
+        <TrainerConfirmationModal
+          event={event}
+          isOpen={trainerConfirmModalOpen}
+          onClose={() => setTrainerConfirmModalOpen(false)}
+          currentUser={user as User}
+          onConfirmed={handleTrainerConfirmed}
+        />
+      )}
+
+      {/* Trainer Selection Modal (for organizational events - public users) */}
+      {isOrganizationalEvent && (
+        <TrainerSelectionModal
+          event={event}
+          trainers={trainers}
+          isOpen={trainerSelectionModalOpen}
+          onClose={() => setTrainerSelectionModalOpen(false)}
+          onSelectTrainer={handleTrainerSelected}
         />
       )}
     </div>

@@ -1,226 +1,205 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import { Event, TrainerSlot, User } from '@/types'
-import { useAuth } from '@/contexts/AuthContext'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog'
+import { Event, User } from '@/types'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog'
 import { Button } from './ui/button'
-import { User as UserIcon, Plus } from 'lucide-react'
-import { formatDate, formatTime } from '@/lib/utils'
-import RegistrationForm from './RegistrationForm'
-import JoinEventModal from './JoinEventModal'
+import { Calendar, Clock, Users, CheckCircle2 } from 'lucide-react'
 
 interface TrainerSelectionModalProps {
   event: Event
+  trainers: { [key: string]: User }
   isOpen: boolean
   onClose: () => void
+  onSelectTrainer: (trainerId: string, trainerSlot: any) => void
 }
 
-export default function TrainerSelectionModal({ event, isOpen, onClose }: TrainerSelectionModalProps) {
-  const { t } = useTranslation()
-  const { userData, isTrainer } = useAuth()
-  const [selectedTrainer, setSelectedTrainer] = useState<{ id: string; slot: TrainerSlot; name: string } | null>(null)
-  const [showJoinModal, setShowJoinModal] = useState(false)
-  const [trainerDetails, setTrainerDetails] = useState<{ [key: string]: User }>({})
+export default function TrainerSelectionModal({
+  event,
+  trainers,
+  isOpen,
+  onClose,
+  onSelectTrainer
+}: TrainerSelectionModalProps) {
+  const { t, i18n } = useTranslation()
+  const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(null)
 
-  const trainers = event.trainers ? Object.entries(event.trainers) : []
-  const hasJoined = userData && event.trainers && event.trainers[userData.uid]
-
-  useEffect(() => {
-    const fetchTrainerDetails = async () => {
-      const details: { [key: string]: User } = {}
-      for (const [trainerId] of trainers) {
-        const trainerDoc = await getDoc(doc(db, 'users', trainerId))
-        if (trainerDoc.exists()) {
-          details[trainerId] = {
-            uid: trainerDoc.id,
-            ...trainerDoc.data()
-          } as User
-        }
-      }
-      setTrainerDetails(details)
-    }
-
-    if (trainers.length > 0) {
-      fetchTrainerDetails()
-    }
-  }, [event.id])
-
-  const handleTrainerSelect = (trainerId: string, slot: TrainerSlot, trainerName: string) => {
-    setSelectedTrainer({ id: trainerId, slot, name: trainerName })
+  const formatEventDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date
+    return d.toLocaleDateString(i18n.language === 'sk' ? 'sk-SK' : 'en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
   }
 
-  const handleCloseRegistration = () => {
-    setSelectedTrainer(null)
+  const handleSelectTrainer = () => {
+    if (!selectedTrainerId) return
+    const trainerSlot = event.trainers[selectedTrainerId]
+    onSelectTrainer(selectedTrainerId, trainerSlot)
   }
 
-  const handleRegistrationSuccess = () => {
-    setSelectedTrainer(null)
-    onClose()
-  }
+  // Get list of confirmed trainers
+  const confirmedTrainers = event.trainers
+    ? Object.entries(event.trainers).map(([trainerId, slot]) => ({
+        trainerId,
+        slot,
+        trainerData: trainers[trainerId]
+      }))
+    : []
 
-  const handleJoinSuccess = () => {
-    setShowJoinModal(false)
-    onClose()
-  }
-
-  if (showJoinModal) {
-    return (
-      <JoinEventModal
-        event={event}
-        isOpen={isOpen}
-        onClose={() => setShowJoinModal(false)}
-        onSuccess={handleJoinSuccess}
-      />
-    )
-  }
-
-  if (selectedTrainer) {
-    return (
-      <RegistrationForm
-        event={event}
-        trainerId={selectedTrainer.id}
-        trainerSlot={selectedTrainer.slot}
-        trainerName={selectedTrainer.name}
-        isOpen={isOpen}
-        onClose={handleCloseRegistration}
-        onSuccess={handleRegistrationSuccess}
-      />
-    )
+  // Check if trainer is full
+  const isTrainerFull = (slot: any) => {
+    if (slot.capacity === -1) return false // Unlimited
+    return slot.currentCount >= slot.capacity
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-background-card max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="bg-background-dark border-border text-white max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-white text-2xl">
-            <div>{event.title}</div>
-            <div className="text-sm text-text-muted font-normal mt-1">
-              {formatDate(event.date)} • {event.startTime || formatTime(event.date)}{
-                event.startTime && (() => {
-                  const [hours, minutes] = event.startTime.split(':').map(Number)
-                  const endMinutes = hours * 60 + minutes + event.duration
-                  const endHours = Math.floor(endMinutes / 60)
-                  const endMins = endMinutes % 60
-                  return `-${String(endHours).padStart(2, '0')}:${String(endMins).padStart(2, '0')}`
-                })()
-              }
-            </div>
+          <DialogTitle className="text-2xl flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-blue-400"></div>
+            {t('booking.selectTrainer') || 'Select Your Trainer'}
           </DialogTitle>
+          <DialogDescription className="text-text-secondary">
+            {formatEventDate(event.date)} • {event.startTime}-{(() => {
+              const [hours, minutes] = event.startTime.split(':').map(Number)
+              const endMinutes = hours * 60 + minutes + (event.duration || 60)
+              const endHours = Math.floor(endMinutes / 60)
+              const endMins = endMinutes % 60
+              return `${String(endHours).padStart(2, '0')}:${String(endMins).padStart(2, '0')}`
+            })()}
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-6 space-y-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-white font-semibold text-lg">
-              {t('events.trainer')}s ({trainers.length})
-            </h3>
-            {isTrainer && !hasJoined && (
-              <Button 
-                onClick={() => setShowJoinModal(true)}
-                size="sm"
-                className="bg-primary hover:bg-primary-gold text-primary-foreground"
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                Join Event
-              </Button>
-            )}
+        <div className="space-y-6 py-4">
+          {/* Event Info */}
+          <div className="bg-background-card rounded-lg p-4">
+            <h3 className="text-xl font-semibold mb-3">{event.title}</h3>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="flex items-center gap-2 text-text-secondary">
+                <Calendar className="h-4 w-4" />
+                {formatEventDate(event.date)}
+              </div>
+              <div className="flex items-center gap-2 text-text-secondary">
+                <Clock className="h-4 w-4" />
+                {event.startTime} • {event.duration} {t('events.duration') || 'min'}
+              </div>
+            </div>
           </div>
 
-          {trainers.length === 0 ? (
-            <div className="text-text-muted text-center py-8">
-              No trainers for this event
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {trainers.map(([trainerId, slot]) => {
-                const trainer = trainerDetails[trainerId]
-                const isFull = slot.capacity !== -1 && slot.currentCount >= slot.capacity
-                const spotsText = slot.capacity === -1 
-                  ? `${slot.currentCount}/∞ spots`
-                  : `${slot.currentCount}/${slot.capacity} spots`
+          {/* Trainer Selection */}
+          <div>
+            <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+              <Users className="h-5 w-5 text-blue-400" />
+              {t('booking.availableTrainers') || 'Available Trainers'} ({confirmedTrainers.length})
+            </h4>
 
-                return (
-                  <div
-                    key={trainerId}
-                    onClick={() => !isFull && trainer && handleTrainerSelect(trainerId, slot, trainer.name)}
-                    className={`
-                      arena-card p-4 transition-all
-                      ${isFull ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:scale-[1.02]'}
-                    `}
-                  >
-                    <div className="flex items-start gap-4">
+            {confirmedTrainers.length === 0 ? (
+              <div className="bg-background-card rounded-lg p-8 text-center">
+                <p className="text-text-secondary">
+                  {t('trainer.noTrainersAvailableYet') || 'No trainers have confirmed their availability yet. Please check back later.'}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {confirmedTrainers.map(({ trainerId, slot, trainerData }) => {
+                  const isFull = isTrainerFull(slot)
+                  const isSelected = selectedTrainerId === trainerId
+                  
+                  return (
+                    <button
+                      key={trainerId}
+                      onClick={() => !isFull && setSelectedTrainerId(trainerId)}
+                      disabled={isFull}
+                      className={`
+                        w-full bg-background-card rounded-lg p-4 flex items-start gap-4 text-left transition-all
+                        ${isFull ? 'opacity-50 cursor-not-allowed' : 'hover:bg-background-card/80 hover:border-blue-400/50 cursor-pointer'}
+                        ${isSelected ? 'border-2 border-blue-400 bg-blue-500/10' : 'border-2 border-transparent'}
+                      `}
+                    >
                       {/* Trainer Photo */}
-                      {trainer?.photoURL ? (
+                      {trainerData?.photoURL ? (
                         <img
-                          src={trainer.photoURL}
-                          alt={trainer.name}
-                          className="w-16 h-16 rounded-full object-cover border-2 border-primary"
+                          src={trainerData.photoURL}
+                          alt={trainerData.name}
+                          className="w-16 h-16 rounded-full object-cover flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-16 h-16 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
-                          <UserIcon className="h-8 w-8 text-primary" />
+                        <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xl flex-shrink-0">
+                          {(trainerData?.name || slot.trainerName)?.charAt(0)}
                         </div>
                       )}
 
                       {/* Trainer Info */}
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="text-white font-semibold text-lg">
-                            {trainer?.name || 'Loading...'}
-                          </h4>
-                          <div className={`
-                            px-3 py-1 rounded-full text-sm font-semibold
-                            ${isFull 
-                              ? 'bg-status-danger/20 text-status-danger' 
-                              : 'bg-status-success/20 text-status-success'}
-                          `}>
-                            {spotsText}
-                          </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h5 className="font-semibold text-white text-lg">
+                            {trainerData?.name || slot.trainerName || 'Unknown Trainer'}
+                          </h5>
+                          {isSelected && (
+                            <CheckCircle2 className="h-5 w-5 text-blue-400 flex-shrink-0" />
+                          )}
                         </div>
 
-                        {slot.description && (
-                          <p className="text-text-secondary text-sm mb-3">
-                            {slot.description}
-                          </p>
-                        )}
+                        {/* Description */}
+                        <p className="text-sm text-text-secondary mb-3">
+                          {slot.description || t('booking.noDescription') || 'No description provided'}
+                        </p>
 
-                        {isFull ? (
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              trainer && handleTrainerSelect(trainerId, slot, trainer.name)
-                            }}
-                            className="border-status-danger text-status-danger hover:bg-status-danger/10"
-                          >
-                            Join Waitlist
-                          </Button>
-                        ) : (
-                          <Button 
-                            size="sm"
-                            className="bg-primary hover:bg-primary-gold text-primary-foreground"
-                          >
-                            Register
-                          </Button>
-                        )}
+                        {/* Capacity Status */}
+                        <div className="flex items-center gap-2">
+                          {isFull ? (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold">
+                              🔴 {slot.currentCount}/{slot.capacity} {t('home.full') || 'FULL'}
+                            </span>
+                          ) : slot.capacity === -1 ? (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
+                              🟢 {slot.currentCount}/∞ {t('events.unlimited') || 'unlimited'}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
+                              🟢 {slot.currentCount}/{slot.capacity} {t('events.spots') || 'spots'}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-        </div>
 
-        <div className="mt-6 flex justify-end">
-          <Button variant="outline" onClick={onClose} className="border-border text-white">
-            {t('common.close')}
-          </Button>
+                      {/* Join Waitlist Button for Full Trainers */}
+                      {isFull && (
+                        <div className="flex-shrink-0">
+                          <span className="text-xs text-yellow-400">
+                            {t('home.joinWaitlist') || 'Join Waitlist'}
+                          </span>
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-4 border-t border-border">
+            <Button
+              onClick={onClose}
+              variant="outline"
+              className="flex-1 border-border text-white hover:bg-white/10"
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              onClick={handleSelectTrainer}
+              disabled={!selectedTrainerId}
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {t('booking.continueWithTrainer') || 'Continue with Selected Trainer'}
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
-

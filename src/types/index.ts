@@ -44,6 +44,12 @@ export interface Event {
   recurrencePattern?: 'daily' | 'weekly' | 'monthly' | null
   recurringDays?: number[] // For weekly: 0=Sun, 1=Mon, etc.
   
+  // Organizational events (imported from Excel)
+  isOrganizational?: boolean
+  importedBy?: string
+  importedAt?: Date
+  status?: 'pending' | 'active' // pending until first trainer confirms
+  
   createdBy: string
   createdAt: Date
   updatedAt?: Date // Optional since not all events have it
@@ -90,6 +96,9 @@ export interface Registration {
   // Cancellation token (for email link cancellation)
   cancellationToken: string // 32-char secure token
   tokenExpiresAt: Date // token expires after 14 days
+  
+  // Organizational event link
+  isOrganizationalEvent?: boolean
   
   // Status
   status: 'confirmed' | 'waitlist' | 'cancelled'
