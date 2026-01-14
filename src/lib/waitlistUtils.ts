@@ -153,10 +153,27 @@ export async function promoteFromWaitlist(eventId: string, trainerId: string): P
                     <p style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 5px;">
                       <strong>📱 QR kód:</strong> Váš QR kód pre check-in nájdete v aplikácii po prihlásení.
                     </p>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: white; border: 2px solid #e5e7eb; border-radius: 8px; text-align: center;">
+                      <p style="margin: 0 0 15px 0; font-size: 14px; color: #666;">
+                        Potrebujete zrušiť registráciu?
+                      </p>
+                      <a href="https://arena-srsnov.vercel.app/my-registration/${firstWaitlisted.id}/${registrationData.cancellationToken}" 
+                         style="display: inline-block; padding: 12px 30px; background: #dc2626; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px;">
+                        Zrušiť registráciu
+                      </a>
+                      <p style="margin: 15px 0 0 0; font-size: 12px; color: #999;">
+                        Tento odkaz je platný do vypršania platnosti tokenu
+                      </p>
+                    </div>
                   </div>
                   
                   <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
                     <p>Tešíme sa na vás na tréningu! 🏒</p>
+                    <p style="font-size: 11px; color: #999; margin-top: 10px;">
+                      Tento email bol automaticky vygenerovaný systémom Aréna Sršňov.
+                    </p>
+                    <p>&copy; ${new Date().getFullYear()} Aréna Sršňov. Všetky práva vyhradené.</p>
                   </div>
                 </div>
               </body>
