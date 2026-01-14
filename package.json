@@ -31,7 +31,8 @@
     "react-i18next": "^14.0.0",
     "react-router-dom": "^6.21.1",
     "recharts": "^2.10.3",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
@@ -48,6 +49,7 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
     "vite-plugin-pwa": "^0.17.4",
-    "workbox-window": "^7.0.0"
+    "workbox-window": "^7.0.0",
+    "@types/node": "^20.10.0"
   }
 }
