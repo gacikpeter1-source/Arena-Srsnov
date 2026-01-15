@@ -122,6 +122,12 @@ service cloud.firestore {
       // Only extension can read/delete
       allow read, delete: if false;
     }
+
+    // Report History collection (for training reports)
+    match /reportHistory/{reportId} {
+      // Only admins can read/write report history
+      allow read, write: if isAdmin();
+    }
   }
 }
 

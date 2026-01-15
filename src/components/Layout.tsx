@@ -109,7 +109,7 @@ export default function Layout({ children }: LayoutProps) {
                         </Button>
                       </Link>
                       <Link to="/import-schedule">
-                        <Button variant="ghost" className="text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 border border-blue-400/30">
+                        <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                           {t('nav.importSchedule') || 'Import Schedule'}
                         </Button>
                       </Link>
@@ -198,7 +198,7 @@ export default function Layout({ children }: LayoutProps) {
                         </Button>
                       </Link>
                       <Link to="/import-schedule" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="ghost" className="w-full text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 justify-start border border-blue-400/30">
+                        <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
                           {t('nav.importSchedule') || 'Import Schedule'}
                         </Button>
                       </Link>

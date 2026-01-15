@@ -161,6 +161,9 @@
   },
   "admin": {
     "title": "Administrácia",
+    "overview": "Prehľad",
+    "trainers": "Tréneri",
+    "reports": "Reporty",
     "statistics": "Štatistiky",
     "trainingsPerTrainer": "Tréningy podľa trénera",
     "attendancePerMonth": "Návštevnosť podľa mesiaca",
@@ -171,7 +174,32 @@
     "remove": "Odstrániť",
     "totalTrainings": "Celkovo tréningov",
     "totalBookings": "Celkovo rezervácií",
-    "activeTrainers": "Aktívni tréneri"
+    "activeTrainers": "Aktívni tréneri",
+    "overview": "Prehľad",
+    "reports": "Reporty"
+  },
+  "reports": {
+    "generateNew": "Vytvoriť nový report",
+    "dateRange": "Časové obdobie",
+    "from": "Od",
+    "to": "Do",
+    "trainers": "Tréneri",
+    "allTrainers": "Všetci tréneri",
+    "specificTrainers": "Špecifickí tréneri",
+    "searchTrainers": "Hľadať trénerov...",
+    "selected": "Vybraných",
+    "exportFormat": "Formát exportu",
+    "preview": "Náhľad",
+    "eventsFound": "tréningov nájdených v časovom období",
+    "generateDownload": "Vytvoriť & Stiahnuť report",
+    "generating": "Vytváram...",
+    "generated": "Vytvorené",
+    "recentReports": "Nedávne reporty",
+    "events": "tréningov",
+    "participants": "účastníkov",
+    "downloadAgain": "Stiahnuť znova",
+    "confirmDelete": "Ste si istí, že chcete vymazať tento report?",
+    "deleted": "Report vymazaný"
   },
   "search": {
     "title": "Nájsť moje registrácie",

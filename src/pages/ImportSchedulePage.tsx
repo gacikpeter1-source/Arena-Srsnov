@@ -261,7 +261,7 @@ export default function ImportSchedulePage() {
       <Card className="arena-card max-w-6xl mx-auto">
         <CardHeader>
           <CardTitle className="text-white text-2xl flex items-center gap-3">
-            <Calendar className="h-7 w-7 text-blue-400" />
+            <Calendar className="h-7 w-7 text-primary" />
             {t('import.title') || 'Import Organizational Schedule'}
           </CardTitle>
           <p className="text-text-secondary text-sm mt-2">
@@ -271,7 +271,7 @@ export default function ImportSchedulePage() {
         <CardContent className="space-y-6">
           {/* File Upload */}
           <div className="border-2 border-dashed border-border rounded-lg p-8 text-center bg-background-dark">
-            <FileSpreadsheet className="h-16 w-16 text-blue-400 mx-auto mb-4" />
+            <FileSpreadsheet className="h-16 w-16 text-primary mx-auto mb-4" />
             <Label htmlFor="file-upload" className="cursor-pointer">
               <div className="text-white font-semibold mb-2">
                 {file ? file.name : t('import.chooseFile') || 'Choose Excel File'}
@@ -279,7 +279,7 @@ export default function ImportSchedulePage() {
               <div className="text-text-secondary text-sm mb-4">
                 {t('import.fileFormats') || 'Supports .xlsx, .xls, .csv'}
               </div>
-              <Button type="button" variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-400/10">
+              <Button type="button" variant="outline" className="border-primary text-primary hover:bg-primary/10">
                 <Upload className="mr-2 h-4 w-4" />
                 {t('import.selectFile') || 'Select File'}
               </Button>
@@ -294,11 +294,11 @@ export default function ImportSchedulePage() {
           </div>
 
           {/* Expected Format Info */}
-          <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-4">
-            <h3 className="text-blue-300 font-semibold mb-2">
+          <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
+            <h3 className="text-primary font-semibold mb-2">
               {t('import.expectedFormat') || 'Expected Format'}
             </h3>
-            <div className="text-blue-200/70 text-sm space-y-1">
+            <div className="text-white/80 text-sm space-y-1">
               <p>• <strong>Date:</strong> YYYY-MM-DD or DD/MM/YYYY (e.g., 2026-01-15 or 15/01/2026)</p>
               <p>• <strong>Time:</strong> HH:MM in 24-hour format (e.g., 14:00, 18:30)</p>
               <p>• <strong>Title:</strong> Event name (string)</p>
@@ -356,7 +356,7 @@ export default function ImportSchedulePage() {
             <Button
               onClick={handleImport}
               disabled={loading || previewEvents.filter(e => e.valid).length === 0}
-              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+              className="flex-1 bg-primary hover:bg-primary-gold text-primary-foreground font-semibold"
             >
               {loading ? t('common.loading') : `${t('import.importEvents') || 'Import'} ${previewEvents.filter(e => e.valid).length} ${t('import.events') || 'Events'}`}
             </Button>

@@ -5,8 +5,10 @@ import { db } from '@/lib/firebase'
 import { User, Event } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { Users, Calendar, TrendingUp, UserCheck } from 'lucide-react'
+import { Users, Calendar, TrendingUp, UserCheck, FileSpreadsheet } from 'lucide-react'
+import ReportsTab from '@/components/ReportsTab'
 
 export default function AdminDashboardPage() {
   const { t } = useTranslation()
@@ -171,8 +173,29 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="content-container py-8">
-      <h1 className="text-white mb-8">{t('admin.title')}</h1>
+      <h1 className="text-white text-3xl font-bold mb-8">{t('admin.title')}</h1>
 
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 mb-6 bg-background-card">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm">
+            <TrendingUp className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">{t('admin.overview') || 'Overview'}</span>
+            <span className="sm:hidden">{t('admin.overview') || 'Overview'}</span>
+          </TabsTrigger>
+          <TabsTrigger value="trainers" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm">
+            <Users className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">{t('admin.trainers') || 'Trainers'}</span>
+            <span className="sm:hidden">{t('admin.trainers') || 'Trainers'}</span>
+          </TabsTrigger>
+          <TabsTrigger value="reports" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm">
+            <FileSpreadsheet className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">{t('admin.reports') || 'Reports'}</span>
+            <span className="sm:hidden">{t('admin.reports') || 'Reports'}</span>
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview">
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card className="bg-white/10 border-white/20">
@@ -232,98 +255,6 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      {/* Pending Approvals */}
-      {pendingTrainers.length > 0 && (
-        <Card className="bg-white/10 border-white/20 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white">{t('admin.pendingApprovals')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {pendingTrainers.map(trainer => (
-                <div key={trainer.uid} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                  <div className="flex items-center gap-4">
-                    {trainer.photoURL ? (
-                      <img
-                        src={trainer.photoURL}
-                        alt={trainer.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                        <Users className="h-6 w-6 text-white/50" />
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-white font-semibold">{trainer.name}</p>
-                      <p className="text-white/70 text-sm">{trainer.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => handleApprove(trainer.uid)}
-                      size="sm"
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      {t('admin.approve')}
-                    </Button>
-                    <Button
-                      onClick={() => handleReject(trainer.uid)}
-                      size="sm"
-                      variant="destructive"
-                    >
-                      {t('admin.reject')}
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* All Trainers */}
-      <Card className="bg-white/10 border-white/20 mb-8">
-        <CardHeader>
-          <CardTitle className="text-white">{t('admin.manageTrainers')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {allTrainers.map(trainer => (
-              <div key={trainer.uid} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                <div className="flex items-center gap-4">
-                  {trainer.photoURL ? (
-                    <img
-                      src={trainer.photoURL}
-                      alt={trainer.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                      <Users className="h-6 w-6 text-white/50" />
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-white font-semibold">{trainer.name}</p>
-                    <p className="text-white/70 text-sm">{trainer.email}</p>
-                    <p className="text-white/50 text-xs capitalize">
-                      {trainer.role} • {trainer.status}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => handleRemove(trainer.uid)}
-                  size="sm"
-                  variant="destructive"
-                >
-                  {t('admin.remove')}
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Statistics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-white/10 border-white/20">
@@ -361,6 +292,110 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div>
+        </TabsContent>
+
+        {/* Trainers Tab */}
+        <TabsContent value="trainers">
+      {/* Pending Approvals */}
+      {pendingTrainers.length > 0 && (
+        <Card className="bg-white/10 border-white/20 mb-8">
+          <CardHeader>
+            <CardTitle className="text-white">{t('admin.pendingApprovals')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {pendingTrainers.map(trainer => (
+                <div key={trainer.uid} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-white/5 rounded-lg">
+                  <div className="flex items-center gap-4 min-w-0 flex-1">
+                    {trainer.photoURL ? (
+                      <img
+                        src={trainer.photoURL}
+                        alt={trainer.name}
+                        className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <Users className="h-6 w-6 text-white/50" />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white font-semibold truncate">{trainer.name}</p>
+                      <p className="text-white/70 text-sm truncate">{trainer.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 flex-shrink-0 w-full sm:w-auto">
+                    <Button
+                      onClick={() => handleApprove(trainer.uid)}
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-initial"
+                    >
+                      {t('admin.approve')}
+                    </Button>
+                    <Button
+                      onClick={() => handleReject(trainer.uid)}
+                      size="sm"
+                      variant="destructive"
+                      className="flex-1 sm:flex-initial"
+                    >
+                      {t('admin.reject')}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* All Trainers */}
+      <Card className="bg-white/10 border-white/20">
+        <CardHeader>
+          <CardTitle className="text-white">{t('admin.manageTrainers')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {allTrainers.map(trainer => (
+              <div key={trainer.uid} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-white/5 rounded-lg">
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  {trainer.photoURL ? (
+                    <img
+                      src={trainer.photoURL}
+                      alt={trainer.name}
+                      className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                      <Users className="h-6 w-6 text-white/50" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-white font-semibold truncate">{trainer.name}</p>
+                    <p className="text-white/70 text-sm truncate">{trainer.email}</p>
+                    <p className="text-white/50 text-xs capitalize">
+                      {trainer.role} • {trainer.status}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => handleRemove(trainer.uid)}
+                  size="sm"
+                  variant="destructive"
+                  className="w-full sm:w-auto flex-shrink-0"
+                >
+                  {t('admin.remove')}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+        </TabsContent>
+
+        {/* Reports Tab */}
+        <TabsContent value="reports">
+          <ReportsTab />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
