@@ -5,9 +5,15 @@ export interface User {
   phone: string
   description?: string
   photoURL?: string
-  role: 'trainer' | 'admin'
+  role: 'trainer' | 'admin' | 'assistant'
   status: 'pending' | 'approved' | 'rejected'
   createdAt: Date
+  permissions?: {
+    viewCalendar?: boolean
+    checkAttendance?: boolean
+    addWalkIns?: boolean
+    viewFullParticipantDetails?: boolean
+  }
 }
 
 // Multi-trainer event system
@@ -49,6 +55,16 @@ export interface Event {
   importedBy?: string
   importedAt?: Date
   status?: 'pending' | 'active' // pending until first trainer confirms
+  
+  // Attendance tracking (for assistants)
+  attendanceStats?: {
+    totalRegistered: number
+    checkedIn: number
+    noShows: number
+    walkIns: number
+    attendanceRate: number
+    lastUpdated: Date
+  }
   
   createdBy: string
   createdAt: Date
@@ -100,10 +116,28 @@ export interface Registration {
   // Organizational event link
   isOrganizationalEvent?: boolean
   
+  // Attendance tracking (for assistants)
+  attendance?: {
+    checkedIn: boolean
+    checkedInAt?: Date
+    checkedInBy?: string
+    noShow: boolean
+  }
+  
   // Status
   status: 'confirmed' | 'waitlist' | 'cancelled'
   position?: number // waitlist position
   registeredAt: Date
+}
+
+export interface WalkIn {
+  id: string
+  eventId: string
+  trainerId?: string // For multi-trainer events
+  name: string
+  notes?: string
+  checkedInAt: Date
+  addedBy: string // Assistant who added them
 }
 
 export interface Booking {

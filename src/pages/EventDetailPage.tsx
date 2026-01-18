@@ -16,6 +16,7 @@ import CancelRegistrationDialog from '@/components/CancelRegistrationDialog'
 import RegistrationForm from '@/components/RegistrationForm'
 import TrainerConfirmationModal from '@/components/TrainerConfirmationModal'
 import TrainerSelectionModal from '@/components/TrainerSelectionModal'
+import AttendanceCheckScreen from '@/components/AttendanceCheckScreen'
 
 export default function EventDetailPage() {
   const { t } = useTranslation()
@@ -36,6 +37,7 @@ export default function EventDetailPage() {
   const [selectedTrainerForRegistration, setSelectedTrainerForRegistration] = useState<{ id: string; slot: any } | null>(null)
   const [trainerConfirmModalOpen, setTrainerConfirmModalOpen] = useState(false)
   const [trainerSelectionModalOpen, setTrainerSelectionModalOpen] = useState(false)
+  const [attendanceCheckOpen, setAttendanceCheckOpen] = useState(false)
 
   useEffect(() => {
     const fetchEventAndRegistrations = async () => {
@@ -334,6 +336,9 @@ export default function EventDetailPage() {
   const isEventTrainer = user && event.trainers && Object.keys(event.trainers).includes(user.uid)
   const canDeleteEvent = (isEventTrainer || user?.role === 'admin') && isTrainer
 
+  // Check if current user is an assistant
+  const isAssistant = user?.role === 'assistant'
+
   // Check if this is an organizational event
   const isOrganizationalEvent = event.isOrganizational === true
   const hasConfirmedTrainers = event.trainers && Object.keys(event.trainers).length > 0
@@ -344,16 +349,16 @@ export default function EventDetailPage() {
       {/* Organizational Event Banner - For Trainers */}
       {isOrganizationalEvent && isTrainer && !isPast && (
         <Card className="bg-blue-500/10 border-2 border-blue-400/30 mb-4">
-          <CardContent className="py-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
+          <CardContent className="py-3 sm:py-4 px-3 sm:px-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="h-3 w-3 rounded-full bg-blue-400"></div>
-                  <h3 className="text-blue-300 font-semibold text-lg">
+                  <div className="h-3 w-3 rounded-full bg-blue-400 flex-shrink-0"></div>
+                  <h3 className="text-blue-300 font-semibold text-base sm:text-lg truncate">
                     {t('trainer.organizationalEvent') || 'Organizational Event'}
                   </h3>
                 </div>
-                <p className="text-blue-200/70 text-sm">
+                <p className="text-blue-200/70 text-xs sm:text-sm">
                   {userHasConfirmed 
                     ? (t('trainer.youHaveConfirmed') || 'You have confirmed your availability for this event')
                     : hasConfirmedTrainers
@@ -364,12 +369,14 @@ export default function EventDetailPage() {
               </div>
               <Button
                 onClick={() => setTrainerConfirmModalOpen(true)}
-                className={userHasConfirmed ? "bg-green-600 hover:bg-green-700" : "bg-blue-500 hover:bg-blue-600"}
+                className={`${userHasConfirmed ? "bg-green-600 hover:bg-green-700" : "bg-blue-500 hover:bg-blue-600"} w-full sm:w-auto text-xs sm:text-sm px-3 sm:px-4 h-9 sm:h-10 flex-shrink-0`}
               >
-                {userHasConfirmed 
-                  ? (t('trainer.viewYourConfirmation') || 'View Confirmation')
-                  : (t('trainer.confirmAvailability') || 'Confirm Availability')
-                }
+                <span className="truncate">
+                  {userHasConfirmed 
+                    ? (t('trainer.viewYourConfirmation') || 'View Confirmation')
+                    : (t('trainer.confirmAvailability') || 'Confirm Availability')
+                  }
+                </span>
               </Button>
             </div>
           </CardContent>
@@ -379,16 +386,16 @@ export default function EventDetailPage() {
       {/* Organizational Event Info - For Public Users */}
       {isOrganizationalEvent && !isTrainer && (
         <Card className="bg-blue-500/10 border-2 border-blue-400/30 mb-4">
-          <CardContent className="py-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
+          <CardContent className="py-3 sm:py-4 px-3 sm:px-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="h-3 w-3 rounded-full bg-blue-400"></div>
-                  <h3 className="text-blue-300 font-semibold">
+                  <div className="h-3 w-3 rounded-full bg-blue-400 flex-shrink-0"></div>
+                  <h3 className="text-blue-300 font-semibold text-base sm:text-lg truncate">
                     {t('trainer.organizationalEvent') || 'Organizational Event'}
                   </h3>
                 </div>
-                <p className="text-blue-200/70 text-sm">
+                <p className="text-blue-200/70 text-xs sm:text-sm">
                   {hasConfirmedTrainers 
                     ? `${Object.keys(event.trainers).length} ${Object.keys(event.trainers).length === 1 ? 'trainer' : 'trainers'} available`
                     : (t('trainer.noTrainersAvailableYet') || 'No trainers have confirmed their availability yet. Please check back later.')
@@ -398,9 +405,9 @@ export default function EventDetailPage() {
               {hasConfirmedTrainers && !isPast && (
                 <Button
                   onClick={() => setTrainerSelectionModalOpen(true)}
-                  className="bg-blue-500 hover:bg-blue-600"
+                  className="bg-blue-500 hover:bg-blue-600 w-full sm:w-auto text-xs sm:text-sm px-3 sm:px-4 h-9 sm:h-10 flex-shrink-0"
                 >
-                  {t('booking.bookNow') || 'Book Now'}
+                  <span className="truncate">{t('booking.bookNow') || 'Book Now'}</span>
                 </Button>
               )}
             </div>
@@ -410,23 +417,38 @@ export default function EventDetailPage() {
 
       {/* Event Details Card */}
       <Card className="bg-white/10 border-white/20 mb-6">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <div className="flex items-center gap-3">
-            {isOrganizationalEvent && <div className="h-2 w-2 rounded-full bg-blue-400"></div>}
-            <CardTitle className="text-white text-3xl">{event.title}</CardTitle>
+        <CardHeader className="space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              {isOrganizationalEvent && <div className="h-2 w-2 rounded-full bg-blue-400 flex-shrink-0"></div>}
+              <CardTitle className="text-white text-xl sm:text-2xl md:text-3xl truncate">{event.title}</CardTitle>
+            </div>
+            
+            <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
+              {/* Assistant: Check Attendance Button */}
+              {isAssistant && (
+                <Button
+                  onClick={() => setAttendanceCheckOpen(true)}
+                  className="bg-primary hover:bg-primary-gold text-primary-foreground font-semibold text-xs sm:text-sm px-2 sm:px-4 h-9 sm:h-10"
+                >
+                  <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                  <span className="truncate">{t('attendance.checkAttendance')}</span>
+                </Button>
+              )}
+              
+              {/* Trainer/Admin: Delete Event Button */}
+              {canDeleteEvent && (
+                <Button
+                  variant="destructive"
+                  onClick={() => setDeleteDialogOpen(true)}
+                  className="text-xs sm:text-sm px-2 sm:px-4 h-9 sm:h-10"
+                >
+                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                  <span className="truncate">{t('events.delete')}</span>
+                </Button>
+              )}
+            </div>
           </div>
-          
-          {/* Trainer/Admin: Delete Event Button */}
-          {canDeleteEvent && (
-            <Button
-              variant="destructive"
-              onClick={() => setDeleteDialogOpen(true)}
-              size="sm"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              {t('events.delete')}
-            </Button>
-          )}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-white">
@@ -920,6 +942,18 @@ export default function EventDetailPage() {
           isOpen={trainerSelectionModalOpen}
           onClose={() => setTrainerSelectionModalOpen(false)}
           onSelectTrainer={handleTrainerSelected}
+        />
+      )}
+
+      {/* Attendance Check Screen (for assistants) */}
+      {attendanceCheckOpen && (
+        <AttendanceCheckScreen
+          event={event}
+          onClose={() => {
+            setAttendanceCheckOpen(false)
+            // Refresh to get updated attendance stats
+            window.location.reload()
+          }}
         />
       )}
     </div>

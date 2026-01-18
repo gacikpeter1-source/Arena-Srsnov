@@ -13,6 +13,7 @@ import CreateEventPage from './pages/CreateEventPage'
 import SettingsPage from './pages/SettingsPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import AssistantDashboardPage from './pages/AssistantDashboardPage'
 import CancelRegistrationPage from './pages/CancelRegistrationPage'
 import ImportSchedulePage from './pages/ImportSchedulePage'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -70,6 +71,14 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminDashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/assistant" 
+              element={
+                <ProtectedRoute>
+                  <AssistantDashboardPage />
                 </ProtectedRoute>
               } 
             />

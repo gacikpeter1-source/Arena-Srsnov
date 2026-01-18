@@ -219,3 +219,135 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #FDB913;
 }
+
+/* Attendance Check-In Screen Styles */
+.participant-card {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s;
+  min-height: 72px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.participant-card:active {
+  background: #333333;
+  transform: scale(0.98);
+}
+
+.participant-card.checked-in {
+  border-left: 4px solid #22c55e;
+}
+
+.participant-card.not-checked {
+  border-left: 4px solid #6b7280;
+}
+
+.participant-card.walk-in {
+  border-left: 4px solid #FDB913;
+  background: rgba(253, 185, 19, 0.05);
+}
+
+/* Checkbox Styling */
+.attendance-checkbox {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border: 2px solid #FDB913;
+  border-radius: 6px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #1a1a1a;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.attendance-checkbox:checked {
+  background: #FDB913;
+  border-color: #FDB913;
+}
+
+.attendance-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #0a0a0a;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.attendance-checkbox:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Participant Info */
+.participant-name {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.participant-id {
+  color: #a0a0a0;
+  font-size: 14px;
+}
+
+.participant-status {
+  color: #22c55e;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.participant-status.not-checked {
+  color: #6b7280;
+}
+
+/* Section Headers */
+.section-header {
+  color: #FDB913;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 24px 0 12px 0;
+  padding: 8px 0;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .participant-card {
+    padding: 12px;
+  }
+  
+  .participant-name {
+    font-size: 15px;
+  }
+  
+  .attendance-checkbox {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+  }
+}
+
+@media (min-width: 768px) {
+  .participant-card:hover {
+    background: #333333;
+    border-color: #FDB913;
+  }
+}

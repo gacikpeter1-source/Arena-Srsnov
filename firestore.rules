@@ -19,6 +19,12 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
     }
     
+    function isAssistant() {
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'assistant' &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+    }
+    
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
@@ -33,6 +39,9 @@ service cloud.firestore {
       
       // Trainers and admins can read full trainer profiles
       allow read: if isTrainer();
+      
+      // Assistants can read trainer/admin profiles for attendance checking
+      allow read: if isAssistant() && resource.data.role in ['trainer', 'admin'];
       
       // New users can create their own profile (registration)
       allow create: if isOwner(userId);
@@ -67,6 +76,10 @@ service cloud.firestore {
       
       // Trainers can update organizational events to add themselves
       allow update: if isTrainer() && resource.data.isOrganizational == true;
+      
+      // Assistants can update attendance stats and validations
+      allow update: if isAssistant() && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['attendanceStats', 'attendanceValidations']);
       
       // Trainers can delete their own events
       allow delete: if isTrainer() && 
@@ -108,11 +121,30 @@ service cloud.firestore {
       // Anyone can create registration (anonymous booking)
       allow create: if true;
       
+      // Assistants can update attendance field only
+      allow update: if isAssistant() && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['attendance']);
+      
       // Allow updates for cancellations and waitlist promotions
       allow update: if true;
       
       // Allow deletion for cancellations (security via email/phone verification on client)
       allow delete: if true;
+    }
+
+    // Walk-ins collection (for assistant-added participants)
+    match /walkIns/{walkInId} {
+      // Assistants, trainers, and admins can read walk-ins
+      allow read: if isAssistant() || isTrainer() || isAdmin();
+      
+      // Assistants can create walk-ins
+      allow create: if isAssistant();
+      
+      // Assistants can delete walk-ins they created
+      allow delete: if isAssistant() && resource.data.addedBy == request.auth.uid;
+      
+      // Admins can delete any walk-in
+      allow delete: if isAdmin();
     }
 
     // Mail collection for email extension

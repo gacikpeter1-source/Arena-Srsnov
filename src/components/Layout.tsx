@@ -115,6 +115,13 @@ export default function Layout({ children }: LayoutProps) {
                       </Link>
                     </>
                   )}
+                  {userData.role === 'assistant' && (
+                    <Link to="/assistant">
+                      <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
+                        {t('nav.assistant') || 'Assistant'}
+                      </Button>
+                    </Link>
+                  )}
                   <Link to="/settings">
                     <Button variant="ghost" className="text-white hover:text-primary hover:bg-primary/10">
                       {t('nav.settings')}
@@ -203,6 +210,13 @@ export default function Layout({ children }: LayoutProps) {
                         </Button>
                       </Link>
                     </>
+                  )}
+                  {userData.role === 'assistant' && (
+                    <Link to="/assistant" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">
+                        {t('nav.assistant') || 'Assistant'}
+                      </Button>
+                    </Link>
                   )}
                   <Link to="/settings" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="ghost" className="w-full text-white hover:text-primary hover:bg-primary/10 justify-start">

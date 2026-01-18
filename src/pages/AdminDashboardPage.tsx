@@ -7,15 +7,18 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { Users, Calendar, TrendingUp, UserCheck, FileSpreadsheet } from 'lucide-react'
+import { Users, Calendar, TrendingUp, UserCheck, FileSpreadsheet, UserPlus } from 'lucide-react'
 import ReportsTab from '@/components/ReportsTab'
+import CreateAssistantModal from '@/components/CreateAssistantModal'
 
 export default function AdminDashboardPage() {
   const { t } = useTranslation()
   const { toast } = useToast()
   const [pendingTrainers, setPendingTrainers] = useState<User[]>([])
   const [allTrainers, setAllTrainers] = useState<User[]>([])
+  const [assistants, setAssistants] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
+  const [createAssistantModalOpen, setCreateAssistantModalOpen] = useState(false)
   const [stats, setStats] = useState({
     totalTrainings: 0,
     totalBookings: 0,
@@ -45,12 +48,18 @@ export default function AdminDashboardPage() {
 
       // Fetch all trainers
       const trainersSnapshot = await getDocs(collection(db, 'users'))
-      const trainers = trainersSnapshot.docs.map(doc => ({
+      const allUsers = trainersSnapshot.docs.map(doc => ({
         uid: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate() || new Date()
       })) as User[]
+      
+      // Separate trainers and assistants
+      const trainers = allUsers.filter(u => u.role === 'trainer' || u.role === 'admin')
+      const assistantUsers = allUsers.filter(u => u.role === 'assistant')
+      
       setAllTrainers(trainers)
+      setAssistants(assistantUsers)
 
       // Fetch all events
       const eventsSnapshot = await getDocs(collection(db, 'events'))
@@ -348,7 +357,7 @@ export default function AdminDashboardPage() {
       )}
 
       {/* All Trainers */}
-      <Card className="bg-white/10 border-white/20">
+      <Card className="bg-white/10 border-white/20 mb-8">
         <CardHeader>
           <CardTitle className="text-white">{t('admin.manageTrainers')}</CardTitle>
         </CardHeader>
@@ -389,6 +398,67 @@ export default function AdminDashboardPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Assistants */}
+      <Card className="bg-white/10 border-white/20">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <CardTitle className="text-white">{t('admin.assistants') || 'Assistants'}</CardTitle>
+          <Button
+            onClick={() => setCreateAssistantModalOpen(true)}
+            size="sm"
+            className="bg-primary hover:bg-primary-gold text-primary-foreground font-semibold"
+          >
+            <UserPlus className="h-4 w-4 mr-2" />
+            {t('admin.createAssistant') || 'Create Assistant'}
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {assistants.length === 0 ? (
+            <div className="text-center py-8 text-text-secondary">
+              <UserCheck className="h-12 w-12 mx-auto mb-3 opacity-50" />
+              <p>{t('admin.noAssistants') || 'No assistants yet'}</p>
+              <p className="text-sm mt-2">
+                {t('admin.createFirstAssistant') || 'Create your first assistant to help manage attendance'}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {assistants.map(assistant => (
+                <div key={assistant.uid} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-white/5 rounded-lg">
+                  <div className="flex items-center gap-4 min-w-0 flex-1">
+                    {assistant.photoURL ? (
+                      <img
+                        src={assistant.photoURL}
+                        alt={assistant.name}
+                        className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <UserCheck className="h-6 w-6 text-primary" />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white font-semibold truncate">{assistant.name}</p>
+                      <p className="text-white/70 text-sm truncate">{assistant.email}</p>
+                      <p className="text-primary text-xs">
+                        {t('attendance.assistant') || 'Assistant'} • {assistant.status}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => handleRemove(assistant.uid)}
+                    size="sm"
+                    variant="destructive"
+                    className="w-full sm:w-auto flex-shrink-0"
+                  >
+                    {t('admin.remove')}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
         </TabsContent>
 
         {/* Reports Tab */}
@@ -396,6 +466,13 @@ export default function AdminDashboardPage() {
           <ReportsTab />
         </TabsContent>
       </Tabs>
+
+      {/* Create Assistant Modal */}
+      <CreateAssistantModal
+        isOpen={createAssistantModalOpen}
+        onClose={() => setCreateAssistantModalOpen(false)}
+        onSuccess={() => fetchData()}
+      />
     </div>
   )
 }
