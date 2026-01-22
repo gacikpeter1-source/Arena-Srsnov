@@ -21,12 +21,12 @@ export default function CreateEventPage() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    title: '',
+    title: t('events.eventTItleDeafult'),
     date: '',
     hour: '14',
     minute: '00',
     duration: 60,
-    type: 'powerskating',
+    //type: 'powerskating',
     capacity: 10,
     isUnlimited: false,
     isRecurring: false,
@@ -36,14 +36,16 @@ export default function CreateEventPage() {
     isOrganizational: false // NEW: Mark as organizational event
   })
 
-  const trainingTypes = [
+ /*const trainingTypes = [
     'powerskating',
     'endurance',
     'shooting',
     'skills',
     'game',
     'other'
-  ]
+  ]*/
+
+  
 
   useEffect(() => {
     if (eventId) {
@@ -66,7 +68,7 @@ export default function CreateEventPage() {
               hour: hours,
               minute: minutes === '0' ? '00' : minutes,
               duration: eventData.duration || 60,
-              type: eventData.type,
+              //type: eventData.type,
               capacity: eventData.capacity === null ? 10 : (eventData.capacity || 10),
               isUnlimited: eventData.capacity === null,
               isRecurring: false,
@@ -111,7 +113,7 @@ export default function CreateEventPage() {
         date: Timestamp.fromDate(eventDateTime),
         startTime: startTime,
         duration: formData.duration,
-        type: formData.type,
+        //type: formData.type,
         createdBy: userData.uid,
         updatedAt: new Date()
       }
@@ -271,7 +273,7 @@ export default function CreateEventPage() {
                   <SelectContent>
                     {Array.from({ length: 24 }, (_, i) => (
                       <SelectItem key={i} value={i.toString()}>
-                        {i.toString().padStart(2, '0')}:00
+                        {i.toString().padStart(2, '0')}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -282,10 +284,14 @@ export default function CreateEventPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="00">:00</SelectItem>
-                    <SelectItem value="15">:15</SelectItem>
-                    <SelectItem value="30">:30</SelectItem>
-                    <SelectItem value="45">:45</SelectItem>
+                    {Array.from({ length: 12 }, (_, i) => {
+                      const minute = (i * 5).toString().padStart(2, '0');
+                      return (
+                        <SelectItem key={minute} value={minute}>
+                          :{minute}
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
@@ -305,7 +311,8 @@ export default function CreateEventPage() {
               />
             </div>
 
-            <div>
+            {/* Training Type - hide for organizational events */}
+            {/* <div>
               <Label htmlFor="type" className="text-white">{t('events.type')}</Label>
               <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
                 <SelectTrigger className="bg-white/10 border-white/20 text-white">
@@ -319,7 +326,7 @@ export default function CreateEventPage() {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
 
             {/* Organizational Event Toggle */}
             {userData?.role === 'admin' && !eventId && (

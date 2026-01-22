@@ -80,6 +80,7 @@
     "failedToRemoveUser": "Nepodarilo sa odstrániť používateľa",
     "eventDeletedSuccess": "Tréning bol úspešne vymazaný",
     "failedToDeleteEvent": "Nepodarilo sa vymazať tréning",
+    "eventTItleDeafult": "Individuálny tréning Korčuľovanie",
     "types": {
       "powerskating": "Powerskating",
       "endurance": "Vytrvalosť",
