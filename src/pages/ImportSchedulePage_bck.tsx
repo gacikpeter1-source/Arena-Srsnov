@@ -272,28 +272,25 @@ export default function ImportSchedulePage() {
           {/* File Upload */}
           <div className="border-2 border-dashed border-border rounded-lg p-8 text-center bg-background-dark">
             <FileSpreadsheet className="h-16 w-16 text-primary mx-auto mb-4" />
-            <div className="text-white font-semibold mb-2">
-              {file ? file.name : t('import.chooseFile') || 'Choose Excel File'}
-            </div>
-            <div className="text-text-secondary text-sm mb-4">
-              {t('import.fileFormats') || 'Supports .xlsx, .xls, .csv'}
-            </div>
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="border-primary text-primary hover:bg-primary/10"
-              onClick={() => document.getElementById('file-upload')?.click()}
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              {t('import.selectFile') || 'Select File'}
-            </Button>
-            <Input
-              id="file-upload"
-              type="file"
-              accept=".xlsx,.xls,.csv"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
+            <Label htmlFor="file-upload" className="cursor-pointer">
+              <div className="text-white font-semibold mb-2">
+                {file ? file.name : t('import.chooseFile') || 'Choose Excel File'}
+              </div>
+              <div className="text-text-secondary text-sm mb-4">
+                {t('import.fileFormats') || 'Supports .xlsx, .xls, .csv'}
+              </div>
+              <Button type="button" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+                <Upload className="mr-2 h-4 w-4" />
+                {t('import.selectFile') || 'Select File'}
+              </Button>
+              <Input
+                id="file-upload"
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </Label>
           </div>
 
           {/* Expected Format Info */}
